@@ -98,7 +98,6 @@ def plot_zooniverse_user_marks_v2(
     :param metadata_records:
     :return:
     """
-    # figure(figsize=(12, 12), dpi=100)
     fig, ax = plt.subplots(1)
     print(f"show plots: {show}")
     ## visualise the image
