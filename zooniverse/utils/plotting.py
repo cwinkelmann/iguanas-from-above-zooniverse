@@ -86,7 +86,7 @@ def plot_zooniverse_user_marks(metadata_records, image_path, output_path: Path =
 
 
 def plot_zooniverse_user_marks_v2(
-    df_marks, image_path, image_name, output_path: Path = None, show=False, title=None
+    df_marks, image_path, image_name, output_path: Path = None, show=False, title=None, fig_size=(8, 8)
 ):
     """
     plot all the marks done by Zooniverse users and return the marks
@@ -98,8 +98,7 @@ def plot_zooniverse_user_marks_v2(
     :param metadata_records:
     :return:
     """
-    # figure(figsize=(12, 12), dpi=100)
-    fig, ax = plt.subplots(1)
+    fig, ax = plt.subplots(1, figsize=fig_size)
     print(f"show plots: {show}")
     ## visualise the image
     data = image.imread(image_path)
@@ -169,7 +168,7 @@ def plot_clusters(
 
     # Create a subplot with 1 row and 2 columns
     fig, (ax2) = plt.subplots(1, 1)
-    fig.set_size_inches(9, 7)
+    # fig.set_size_inches(9, 7)
     n_clusters = len(np.unique(cluster_labels))
     # 2nd Plot showing the actual clusters formed
     colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
