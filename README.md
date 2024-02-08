@@ -2,7 +2,7 @@
 Process to cluster marks set by Volunteers on zooniverse
 
 ## Installation
-Python 3.8, 3.9, 3.10 are supported. To install the required packages, run the following command:
+Python 3.8, 3.9, 3.10 are tested. To install the required packages, run the following command:
 ```bash
 pip install -r requirements.txt
 ```
