@@ -3,4 +3,4 @@ hdbscan_count_rmse,1.1147212881684183
 mode_count_rmse,1.5951108733329016
 mean_count_rmse,1.6217092305349832
 median_count_rmse,1.8060549049036763
-dbscan_count_sil_rmse,2.0697883149344167
+dbscan_count_sil_rmse,2.0726451669703816
