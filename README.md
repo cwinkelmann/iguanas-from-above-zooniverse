@@ -7,7 +7,7 @@ Python 3.8, 3.9, 3.10 are tested. To install the required packages, run the foll
 pip install -r requirements.txt
 ```
 
-If the install doesn't work, try to install the packages one by one:
+If the installation doesn't work, try to install the packages one by one:
 ```bash
 pip install matplotlib jupyterlab pandas scikit-learn loguru black  
 ```
@@ -18,7 +18,7 @@ Run jupyterlab first via
 ```bash
 jupyter lab
 ```
-It requires some files defined in the config.py file
+It requires some files defined in the config.py file. They are relative to the input_path, so if the file "iguanas-from-above-classifications.csv" is located at "/User/ABC/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv" the input_path needs to be /User/ABC but the config is set.
 
 ```python
 from pathlib import Path
