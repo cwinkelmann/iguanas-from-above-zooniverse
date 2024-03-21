@@ -9,7 +9,7 @@ pip install -r requirements.txt
 
 If the installation doesn't work, try to install the packages one by one:
 ```bash
-pip install matplotlib jupyterlab pandas scikit-learn loguru black  
+pip install matplotlib jupyterlab pandas scikit-learn loguru black pytest
 ```
 
 ## Usage

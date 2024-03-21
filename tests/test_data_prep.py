@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pandas as pd
 
-from zooniverse.config import get_config
-from zooniverse.utils.data_format import data_prep
+from zooniverse.config import get_config, get_config_all
+from zooniverse.utils.data_format import data_prep, data_prep_all
 
 
 class DataPrepTestCase(unittest.TestCase):
@@ -90,6 +90,32 @@ class DataPrepTestCase(unittest.TestCase):
                           'image_path',
                           'width',
                           'height'], list(df_merged_dataset.columns), "ensure the columns are the right ones in there")
+
+
+
+
+    def test_data_prep_phase_3_no_filter_all(self):
+        """
+        Test the data prep without any filtering the images
+        :return:
+        """
+        phase_tag = "Iguanas 3rd launch"  # how the phase is named in the zooniverse classifications
+
+        input_path = Path("/Users/christian/data/zooniverse")
+        output_path = input_path.joinpath("test_analysis").joinpath(phase_tag)
+        output_path.mkdir(parents=True, exist_ok=True)
+        config = get_config_all(phase_tag=phase_tag, input_path=input_path, output_path=output_path)
+
+        ds_stats = data_prep_all(phase_tag=phase_tag,
+                             input_path=input_path,
+                             output_path=output_path,
+                             config=config)
+
+        self.assertEqual(
+            [{'filename': 'flat_dataset_Iguanas 3rd launch.csv', 'images': 8330},
+             {'filename': 'merged_dataset_gold_standard_expert_Iguanas 3rd launch_filtered.csv',
+              'images': 7664}],
+            ds_stats.to_dict(orient="records"))
 
 
 if __name__ == '__main__':

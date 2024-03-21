@@ -56,22 +56,13 @@ def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
     """
     if image_source is None:
         return None
-    # metadata_file = cache_dir.joinpath("image_paths_metadata.json")
 
-    # if not Path(metadata_file).is_file():
-    #     logger.info(f"WAIT: {metadata_file} file doesn't exist")
-
-    # image_list = glob.glob(str(image_source.joinpath("*/*/*.jpg")))
     image_list = glob.glob(str(image_source.joinpath("**/*.jpg")), recursive=True)
 
     if len(image_list) == 0:
         logger.warning(f"Found {len(image_list)} images in the folder {image_source}")
 
     images_split_list = [Path(x).parts for x in image_list]
-    image_list = [
-        {"mission_name": x[-2], "image_name": x[-1], "image_path": Path(*list(x))}
-        for x in images_split_list
-    ]
 
     image_dict = {
         x[-1]: {
@@ -91,18 +82,6 @@ def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
 
         im.close()
 
-        # with open(metadata_file, 'w+') as f:
-        #     logger.info(f"Wrote: {metadata_file} which contains the image metadata")
-        #     json.dump(image_dict, f)
-    #
-    # else:
-    #     logger.info(f"OK: {metadata_file} file does exist")
-    #
-    #     with open(metadata_file, 'r') as f:
-    #         image_dict = json.load(f)
-
-    ## FIXME the image_list and the image_dict have a different length, meaning there are images in there twice
-
     logger.info("done with processing Image Metadata.")
     return pd.DataFrame(image_dict).T
 
@@ -114,10 +93,6 @@ def deduplicate_entries(merged_dataset):
     :param merged_dataset:
     :return:
     """
-
-    image_index_mapping = pd.DataFrame(merged_dataset)["image_name"].reset_index(
-        drop=False
-    )
     # iterate over the dataset and merge the marks
     compacted_marks_per_data_frame = []
     marks_per_data_frame = (
@@ -206,7 +181,6 @@ def get_estimated_DBSCAN_count(
     # Number of clusters in labels, ignoring noise if present.
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise_ = list(labels).count(-1)
-    # logger.info(f"processing {image_name} with eps {eps} and min_samples {min_samples}, n_clusters_ {n_clusters_}")
 
     unique_labels = set(labels)
     core_samples_mask = np.zeros_like(labels, dtype=bool)
@@ -281,6 +255,7 @@ def kmeans_knee(
 ):
     """
     estimate the location of objects using the elbow method
+
     :param df_marks:
     :param annotations_count:
     :param output_path:
