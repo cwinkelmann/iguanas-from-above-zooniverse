@@ -3,6 +3,8 @@ import shutil
 from csv import reader
 import glob
 from pathlib import Path
+from typing import Optional
+
 import pandas as pd
 from loguru import logger
 
@@ -78,15 +80,17 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
                                    cache_folder: Path,
                                    image_names=None,
                                    subject_ids=None,
-                                   phase_tag="Iguanas 2nd launch",
                                    filter_func=None) -> pd.DataFrame:
     """
     merge Zooniverse part 2 data with the image dictionary
 
-    @param annotations_source:
     @param image_source:
     @param cache_folder:
+    @param image_names:
+    @param subject_ids:
+    @param filter_func:
     @return:
+
     """
 
     if image_names:
@@ -100,6 +104,7 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
         df_zooniverse_flat = df_zooniverse_flat[
             df_zooniverse_flat.subject_id.isin(subject_ids)]
         logger.info(f"working with {len(df_zooniverse_flat.image_name.unique())} images after filtering with subject_ids")
+
         difference = set(subject_ids).difference(set(df_zooniverse_flat.subject_id.unique()))
         if len(difference) > 0:
             logger.warning(f"Some of the subjects ids you used filter are not present in the set. These are: {difference}")
@@ -210,7 +215,7 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
 
                             for key, image_information_value in image_information.items():
 
-                                ## this has been renamed quite a bit
+                                # this has been renamed quite a bit
                                 flight_site_code = image_information_value.get("flight_site_code",
                                                              image_information_value.get("flight_code", image_information_value.get("Flight")))
                                 if flight_site_code is None:
@@ -263,33 +268,29 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
     return dict_result
 
 
-def data_prep(phase_tag,
-              output_path,
-              input_path = Path("/Users/christian/data/zooniverse"),
-              filter_combination = "expert_goldstandard",
+def data_prep(phase_tag: str,
+              output_path: Path,
+              config: Optional[dict],
+              input_path,
+              filter_combination="expert_goldstandard"
               ):
     """
-
+    prepare the zooniverse classifications
+    :param filter_combination: either expert_goldstandard or expert
     :param phase_tag:
     :param output_path:
     :return:
     """
-    output_plot_path = output_path.joinpath("plots")
-    # output_plot_path = None
-    cache_dir = output_path.joinpath("cache")
-
-    results = []
-
     ds_stats = []
-
-    config = get_config(phase_tag=phase_tag, input_path=input_path, output_path=output_path)
-    # images for plot on them
+    if not config:
+        config = get_config(phase_tag=phase_tag, input_path=input_path, output_path=output_path)
+    # images for plotting marks on them
     image_source = config["image_source"]
     # image_source = None
     annotations_source = config["annotations_source"]
     zooniverse_annotation_dataset = read_zooniverse_annotations_v2(annotations_source=annotations_source,
                                                                    phase_tags=[phase_tag])
-
+    # the path of the flat dataset
     flatdataset_path = config["flat_dataset"]
     df_zooniverse_data = zooniverse_annotation_dataset["flat_dataset"]
     df_yes_no_dataset = zooniverse_annotation_dataset["yes_no_dataset"]
@@ -300,7 +301,7 @@ def data_prep(phase_tag,
     df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.user_id != 2581179]
     df_zooniverse_data.to_csv(flatdataset_path, index=False)
     logger.info(f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
-    ds_stats.append({"filename": f"flat_dataset_ {phase_tag}.csv",
+    ds_stats.append({"filename": f"{flatdataset_path.name}",
                      "images": len(df_zooniverse_data.groupby('image_name').count())}
                     )
 
@@ -345,17 +346,8 @@ def data_prep(phase_tag,
                                                        cache_folder=cache_folder,
                                                        image_names=image_names,
                                                        subject_ids=subject_ids_filter,
-                                                       ## FIXME when did we aggree to filter these again?
-                                                       filter_func=filter_remove_marks,
-                                                       # filter_func=None,
-                                                       phase_tag=phase_tag
+                                                       filter_func=filter_remove_marks
                                                        )
-
-    logger.info(f"working with {len(df_merged_dataset)} records after process function 'process_zooniverse_phases'")
-    logger.info(f"{len(df_merged_dataset.image_name.unique())} images 'process_zooniverse_phases' after the filtering")
-    ds_stats.append({"filename": f"df_merged_dataset_{phase_tag}", "images": len(df_merged_dataset.image_name.unique())})
-
-    df_merged_dataset.to_csv(output_path.joinpath(f"processed_zooniverse_classification_{phase_tag}.csv"))
 
     imagename_subject_id_map = df_merged_dataset[["image_name", "subject_id"]].groupby(
         "image_name").first().reset_index(drop=False)
@@ -363,23 +355,82 @@ def data_prep(phase_tag,
 
     df_gold_standard_image_subset = imagename_subject_id_map.merge(df_gold_standard_image_subset, on="subject_id")
     df_gold_standard_and_expert = df_gold_standard_image_subset.merge(df_goldstandard_expert_count, on="subject_id")
-    df_gold_standard_and_expert.to_csv(output_path.joinpath(f"gold_standard_and_expert_{phase_tag}.csv"))
+    df_gold_standard_and_expert.to_csv(output_path.joinpath(f"{config['gold_standard_and_expert_count']}"))
 
 
     df_goldstandard_expert_count[df_goldstandard_expert_count.subject_id.isin(df_gold_standard_image_subset.subject_id.to_list())].to_csv(config["gold_standard_and_expert_count"])
 
+    logger.info(f"working with {len(df_merged_dataset)} records after process function 'process_zooniverse_phases'")
+    df_merged_dataset.to_csv(config["merged_dataset"])
+    logger.info(f"saved finished dataset to {config['merged_dataset']}")
+    ds_stats.append({"filename": f"{config['merged_dataset'].name}", "images": len(df_merged_dataset.image_name.unique())})
 
-    ## Don't apply this filtereing here, only when needed later
-    # df_merged_dataset = filter_df_threshold(df_merged_dataset, user_threshold=5)
+    pd.DataFrame(ds_stats).to_csv(output_path.joinpath(f"ds_stats_{phase_tag}.csv"))
 
-    df_merged_dataset.to_csv(output_path.joinpath(f"merged_dataset_gold_standard_expert_{phase_tag}_filtered.csv"))
-    logger.info(f"saved finished dataset to {output_path.joinpath(f'merged_dataset_gold_standard_expert_{phase_tag}_filtered.csv')}")
+    return pd.DataFrame(ds_stats)
 
-    ds_stats.append({"filename": f"merged_dataset_gold_standard_expert_{phase_tag}_filtered.csv", "images": len(df_merged_dataset.image_name.unique())})
-    ## TODO for experimaentation only
-    # df_merged_dataset = df_merged_dataset[df_merged_dataset.image_name == "EGI08-2_78.jpg"]
-    # df_merged_dataset = df_merged_dataset[df_merged_dataset.image_name.isin(["FMO03-1_65.jpg", "EGI01-1-2_120.jpg", "ESCG02-1_19.jpg", "EGI08-2_78.jpg"])]
-    # df_merged_dataset = df_merged_dataset[df_merged_dataset.image_name.isin(["EGI08-2_78.jpg"])]
+
+def data_prep_all(phase_tag: str,
+              output_path: Path,
+              config: Optional[dict],
+              input_path,
+              ):
+    """
+    prepare the zooniverse classifications
+
+    :param filter_combination: either expert_goldstandard or expert
+    :param phase_tag:
+    :param output_path:
+    :return:
+    """
+    ds_stats = []
+
+    annotations_source = config["annotations_source"]
+    zooniverse_annotation_dataset = read_zooniverse_annotations_v2(annotations_source=annotations_source,
+                                                                   phase_tags=[phase_tag])
+    # the path of the flat dataset
+    flatdataset_path = config["flat_dataset"]
+    df_zooniverse_data = zooniverse_annotation_dataset["flat_dataset"]
+    df_yes_no_dataset = zooniverse_annotation_dataset["yes_no_dataset"]
+
+    df_yes_no_dataset.to_csv(config["yes_no_dataset"])
+
+    # this user is a spammer
+    df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.user_id != 2581179]
+    df_zooniverse_data.to_csv(flatdataset_path, index=False)
+    logger.info(f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
+    ds_stats.append({"filename": f"{flatdataset_path.name}",
+                     "images": len(df_zooniverse_data.groupby('image_name').count())}
+                    )
+
+    image_names = None
+
+    output_path.mkdir(exist_ok=True)
+    cache_folder = input_path.joinpath(f"cache_{phase_tag}")
+
+
+
+    subject_ids_filter = None
+
+    ## flatten, filter and metadata to it
+    df_merged_dataset = process_zooniverse_phases_flat(df_zooniverse_flat=df_zooniverse_data,
+                                                       image_source=None,
+                                                       cache_folder=cache_folder,
+                                                       image_names=image_names,
+                                                       subject_ids=subject_ids_filter,
+                                                       filter_func=filter_remove_marks,
+                                                       )
+
+    imagename_subject_id_map = df_merged_dataset[["image_name", "subject_id"]].groupby(
+        "image_name").first().reset_index(drop=False)
+
+    # writing to csv
+    imagename_subject_id_map.to_csv(output_path.joinpath(f"imagename_subjectid_map_{phase_tag}.csv"))
+
+    logger.info(f"working with {len(df_merged_dataset)} records after process function 'process_zooniverse_phases'")
+    df_merged_dataset.to_csv(config["merged_dataset"])
+    logger.info(f"saved finished dataset to {config['merged_dataset']}")
+    ds_stats.append({"filename": f"{config['merged_dataset'].name}", "images": len(df_merged_dataset.image_name.unique())})
 
     pd.DataFrame(ds_stats).to_csv(output_path.joinpath(f"ds_stats_{phase_tag}.csv"))
 

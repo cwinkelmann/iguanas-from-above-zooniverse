@@ -65,9 +65,6 @@ def plot_zooniverse_user_marks(metadata_records, image_path, output_path: Path =
             raise KeyError()
 
         labels_all = labels_all + marker_labels
-        # put a red dot, size 40, at 2 locations:
-
-        ## TODO plot the objects by the label with different markers. So scatter has to be called once for each marker
         plt.scatter(x=x_list, y=y_list, c=colors[n], s=40)
 
         n = n + 1

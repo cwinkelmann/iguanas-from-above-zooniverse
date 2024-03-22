@@ -59,7 +59,7 @@ nbclient==0.8.0
 nbconvert==7.10.0
 nbformat==5.9.2
 nest-asyncio==1.5.8
-notebook==7.0.6
+notebook==7.1.2
 notebook_shim==0.2.3
 numpy==1.26.1
 overrides==7.4.0
@@ -68,7 +68,7 @@ pandas==2.1.2
 pandocfilters==1.5.0
 parso==0.8.3
 pexpect==4.8.0
-Pillow==10.1.0
+Pillow==10.2.0
 platformdirs==3.11.0
 prometheus-client==0.18.0
 prompt-toolkit==3.0.39
@@ -115,4 +115,4 @@ webencodings==0.5.1
 websocket-client==1.6.4
 widgetsnbextension==4.0.9
 yellowbrick==1.5
-
+pytest==8.1.1
