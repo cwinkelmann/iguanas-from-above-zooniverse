@@ -606,7 +606,7 @@ def kmeans_BIC(
     }
 
 
-def HDBSCAN_Wrapper(
+def hdbscan(
     df_marks,
     image_name,
     params,
@@ -733,7 +733,7 @@ def get_annotation_count_stats(annotations_count, image_name):
     }
 
 
-def compare_dbscan_hyp_v2(df_flat, params, output_plot_path: Path, plot=False):
+def compare_dbscan(df_flat: pd.DataFrame, params, output_plot_path: Path, plot=False):
     """
     run dbscan clustering on all images and compare the results with the gold standard
 

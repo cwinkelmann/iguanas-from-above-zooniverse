@@ -4,7 +4,7 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from zooniverse.analysis import get_mark_overview, get_annotation_count_stats, HDBSCAN_Wrapper, compare_dbscan_hyp_v2
+from zooniverse.analysis import get_mark_overview, get_annotation_count_stats, hdbscan, compare_dbscan
 from zooniverse.utils.filters import filter_df_user_threshold
 
 
@@ -215,7 +215,7 @@ def test_db_scan_expert_5th(df_merged_dataset, expert_5th):
     db_scan_best_bic_results = []
     for image_name, df_image_name in df_merged_dataset.groupby("image_name"):
 
-        dbscan_localization = compare_dbscan_hyp_v2(
+        dbscan_localization = compare_dbscan(
             params=params,
             df_flat=df_image_name,
             output_plot_path=None,
@@ -255,7 +255,7 @@ def test_hdbscan_clustering_filtered(df_merged_dataset, expert_subjectids):
         if df_image_name.shape[0] >= 5:  # If num_samples is 5 for the min_cluster_size is 5
             # there is no point in passing data with less than 5 samples
 
-            df_hdbscan = HDBSCAN_Wrapper(df_marks=df_image_name[["x", "y"]],
+            df_hdbscan = hdbscan(df_marks=df_image_name[["x", "y"]],
                                          output_path=None,
                                          image_name=image_name,
                                          params=[(0.0, 5, None)])
