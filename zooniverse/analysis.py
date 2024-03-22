@@ -621,10 +621,8 @@ def kmeans_BIC(
 
 def HDBSCAN_Wrapper(
     df_marks,
-    annotations_count,
     image_name,
     params,
-    min_cluster_size=3,
     plot=False,
     show=False,
     output_path: Path = None,
@@ -668,13 +666,13 @@ def HDBSCAN_Wrapper(
                 figure_title=f"HDBSCAN Clustering for {image_name}",
                 main_title=f"n={len(clusterer.centroids_)} eps={eps} min_cluster_size={min_cluster_size} max_cluster_size={max_cluster_size}",
             )
-
-        bic_avg = bic_score(X, cluster_labels)
+        # calculate the Baysian Information Criterion (BIC) score
+        # bic_avg = bic_score(X, cluster_labels)
         bic_avg = {
             "image_name": image_name,
             "with_noise": True,
             "HDBSCAN_count": len(clusterer.centroids_),
-            "bic_avg": bic_avg,
+            # "bic_avg": bic_avg,
             "eps": eps,
             "min_cluster_size": min_cluster_size,
             "max_cluster_size": max_cluster_size,

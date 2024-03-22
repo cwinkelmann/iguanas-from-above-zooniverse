@@ -45,7 +45,7 @@ class DataPrepTestCase(unittest.TestCase):
                 '/Users/A/B/C/Images/Zooniverse_Goldstandard_images/expert-GS-1stphase.csv'),
             'image_source': Path('/Users/A/B/C/Images/Zooniverse_Goldstandard_images/1st launch'),
             'merged_dataset': Path(
-                '/Users/A/B/C/test_analysis/Iguanas 1st launch/merged_dataset_gold_standard_expert_Iguanas 1st launch_filtered.csv'),
+                '/Users/A/B/C/test_analysis/Iguanas 1st launch/flat_dataset_filtered_Iguanas 1st launch.csv'),
             'method_sums': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_sums.csv'),
             'rmse_errors': Path(
@@ -69,8 +69,7 @@ class DataPrepTestCase(unittest.TestCase):
              {'filename': '1st launch', 'images': 2737},
              {'filename': 'expert-GS-1stphase.csv', 'images': 2733},
              {'filename': '1-T2-GS-results-5th-0s.csv', 'images': 107},
-             {'filename': 'merged_dataset_gold_standard_expert_Iguanas 1st '
-                          'launch_filtered.csv',
+             {'filename': 'flat_dataset_filtered_Iguanas 1st launch.csv',
               'images': 107}],
             ds_stats.to_dict(orient="records"))
 
@@ -92,8 +91,6 @@ class DataPrepTestCase(unittest.TestCase):
                           'height'], list(df_merged_dataset.columns), "ensure the columns are the right ones in there")
 
 
-
-
     def test_data_prep_phase_3_no_filter_all(self):
         """
         Test the data prep without any filtering the images
@@ -113,7 +110,7 @@ class DataPrepTestCase(unittest.TestCase):
 
         self.assertEqual(
             [{'filename': 'flat_dataset_Iguanas 3rd launch.csv', 'images': 8330},
-             {'filename': 'merged_dataset_gold_standard_expert_Iguanas 3rd launch_filtered.csv',
+             {'filename': 'flat_dataset_filtered_Iguanas 3rd launch.csv',
               'images': 7664}],
             ds_stats.to_dict(orient="records"))
 

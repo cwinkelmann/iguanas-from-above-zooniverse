@@ -125,6 +125,7 @@ def bic_score(X, labels):
         if len(X_cluster) == 1:
             # logger.warning(f"only one point in the cluster")
             pass
+        # else:
         variance = np.sum((X_cluster - centroid) ** 2) / (len(X_cluster) - 1)
 
         loglikelihood += (
