@@ -1,8 +1,6 @@
 import glob
-import json
-import random
-import shutil
 import statistics
+from typing import Optional
 
 from kneed import KneeLocator
 from matplotlib import pyplot as plt
@@ -31,18 +29,7 @@ from zooniverse.utils.basic_clustering import (
     get_curve_shape,
     bic_score,
 )
-from zooniverse.utils.plotting import plot_clusters, plot_clusters_v2
-
-BOX_SIZE = 60
-
-## a list of users which are supposed to be trustworthy
-trustworthy_users = [
-    "Pamelavans" "robert1601",
-    "Darkstar1977",
-    "H.axon",
-    "Quynhanhdo" "Taylor_Q" "databanana" "Heuvelmans" "Big_Ade" "babyemperor" "HW1881",
-]
-
+from zooniverse.utils.plotting import plot_clusters_v2
 
 def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
     """
@@ -156,7 +143,7 @@ def reformat_marks(metadata_record_FMO01_68):
 
 
 def get_estimated_DBSCAN_count(
-    df_marks, image_name, params, output_path=None, plot=False
+    df_marks, image_name, params, output_path: Optional[Path] = None, plot=False
 ):
     """
     DBSCAN clustering
@@ -244,7 +231,7 @@ def get_estimated_DBSCAN_count(
     result[f"dbscan_count"] = n_clusters_
     result[f"dbscan_noise"] = n_noise_
     result[f"dbscan_silouette_score"] = metrics.silhouette_score(X, labels)
-    result[f"dbscan_BIC_score"] = bic_score(X, labels)
+    # result[f"dbscan_BIC_score"] = bic_score(X, labels)
 
     result["image_name"] = image_name
     return result

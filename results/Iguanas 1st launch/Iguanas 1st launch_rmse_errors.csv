@@ -1,6 +1,6 @@
 ,0
-mean_count_rmse,2.0981894731936297
-hdbscan_count_rmse,2.100289254667325
-median_count_rmse,2.3803125531045897
-dbscan_count_sil_rmse,2.451396702778341
-mode_count_rmse,2.916277232568307
+hdbscan_count_rmse,0.569373231129091
+mean_count_rmse,0.5744746721315048
+median_count_rmse,0.615761392861036
+dbscan_count_sil_rmse,0.6292073897061965
+mode_count_rmse,0.7157217283199636

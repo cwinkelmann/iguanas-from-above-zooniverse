@@ -104,6 +104,7 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
         df_zooniverse_flat = df_zooniverse_flat[
             df_zooniverse_flat.subject_id.isin(subject_ids)]
         logger.info(f"working with {len(df_zooniverse_flat.image_name.unique())} images after filtering with subject_ids")
+
         difference = set(subject_ids).difference(set(df_zooniverse_flat.subject_id.unique()))
         if len(difference) > 0:
             logger.warning(f"Some of the subjects ids you used filter are not present in the set. These are: {difference}")

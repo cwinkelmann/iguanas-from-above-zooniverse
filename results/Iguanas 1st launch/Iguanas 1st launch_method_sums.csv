@@ -1,7 +1,7 @@
 ,0
-mode_count,221.0
-median_count,235.5
-HDBSCAN_count,247.0
-dbscan_count_sil,256.0
-mean_count,271.40999999999997
-count_total,331.0
+mode_count,200.0
+dbscan_count_sil,222.0
+median_count,228.5
+HDBSCAN_count,244.0
+mean_count,263.08
+count_total,422.0
