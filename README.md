@@ -20,6 +20,24 @@ jupyter lab
 ```
 It requires some files defined in the config.py file. They are relative to the input_path, so if the file "iguanas-from-above-classifications.csv" is located at "/User/ABC/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv" the input_path needs to be /User/ABC but the config is set.
 
+## installing panoptes aggregation
+```bash
+# https://aggregation-caesar.zooniverse.org/README.html
+# pip install panoptes_aggregation # this fails because the hdbscan cannot be built.
+
+pip install -U git+https://github.com/zooniverse/aggregation-for-caesar.git
+
+# crate the config file
+panoptes_aggregation config /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-workflows.csv 14370 
+
+
+## extraction 
+panoptes_aggregation extract /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv -d /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/panoptes Extractor_config_workflow_14370_V142.245.yaml
+
+
+```
+
+
 ```python
 from pathlib import Path
 

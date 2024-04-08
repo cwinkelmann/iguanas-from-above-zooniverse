@@ -192,6 +192,8 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
 
                 task_information = json.loads(row[idx_TASK_INFORMATION])
                 subject_id = int(row[idx_SUBJECT_IDS])
+                if subject_id == 47969478:
+                    print("found 47969478")
                 ## Are there any Iguanas?
                 if task_information[TASK_LABEL_ARE_THERE_ANY_IGUANAS]["task"] == "T0" and phase_information in phase_tags:  ## is there anything?
 
@@ -299,6 +301,7 @@ def data_prep(phase_tag: str,
 
     # this user is a spammer
     df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.user_id != 2581179]
+    df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.subject_id.isin([47969478])] # TODO do not commit
     df_zooniverse_data.to_csv(flatdataset_path, index=False)
     logger.info(f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
     ds_stats.append({"filename": f"{flatdataset_path.name}",
