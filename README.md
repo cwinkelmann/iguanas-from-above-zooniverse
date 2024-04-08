@@ -27,16 +27,28 @@ It requires some files defined in the config.py file. They are relative to the i
 
 pip install -U git+https://github.com/zooniverse/aggregation-for-caesar.git
 
+```
+
+The workflow ids for phase 1,2,3 are : 14370, 20600, 22040
 # crate the config file
+```bash
 panoptes_aggregation config /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-workflows.csv 14370 
+```
 
 
+```bash
 ## extraction 
 panoptes_aggregation extract /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv -d /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/panoptes Extractor_config_workflow_14370_V142.245.yaml
 
 
 ```
 
+The right version id
+
+
+```bash
+panoptes_aggregation extract /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv -d /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/panoptes Extractor_config_workflow_14370_V134.236.yaml
+```
 
 ```python
 from pathlib import Path

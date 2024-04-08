@@ -77,12 +77,11 @@ def group_by_image(merged_dataset, n=None, threshold=None):
 
 def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
                                    image_source: Path,
-                                   cache_folder: Path,
                                    image_names=None,
                                    subject_ids=None,
                                    filter_func=None) -> pd.DataFrame:
     """
-    merge Zooniverse part 2 data with the image dictionary
+    merge Zooniverse part 2 data with the image dictionary, filter for subjects ids and a custom filter function
 
     @param image_source:
     @param cache_folder:
@@ -110,10 +109,11 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
             logger.warning(f"Some of the subjects ids you used filter are not present in the set. These are: {difference}")
 
 
-    image_dict = get_all_image_paths(image_source, cache_dir=cache_folder)
+    image_dict = get_all_image_paths(image_source)
 
     if filter_func is not None:
         df_zooniverse_flat = filter_func(df_zooniverse_flat)
+
     ## add the image information if it is available
     if image_dict is not None:
         df_zooniverse_flat = df_zooniverse_flat.merge(image_dict, on='image_name', how='left')
@@ -125,7 +125,6 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
 
 def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = None):
     """
-
     Iterate throughe the zooniverse annotations
 
     @param annotations_source:
@@ -138,7 +137,9 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
     # index for certain information.
     idx_USER_NAME = 1
     idx_USER_ID = 2
+    idx_WORKFLOW_ID = 4
     idx_PHASE = 5
+    idx_WORKFLOW_VERSION = 6
     idx_LABEL_TIME = 7
     idx_USER_INFORMATION = 10
     idx_TASK_INFORMATION = 11
@@ -183,7 +184,7 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
                 labeling_started_at = user_information["started_at"]
                 labeling_finished_at = user_information["finished_at"]
 
-                phase_information_passed = False
+
                 if phase_information in phase_tags:
                     phase_information_passed = True
                     n = n + 1
@@ -231,6 +232,8 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
 
                                 for mark in marks:
                                     flat_dataset.append({"flight_site_code": flight_site_code,
+                                                         "workflow_id": row[idx_WORKFLOW_ID],
+                                                         "workflow_version": row[idx_WORKFLOW_VERSION],
                                                          "image_name": image_name,
                                                          "subject_id": subject_id,
                                                          # "mark": mark,
@@ -301,7 +304,10 @@ def data_prep(phase_tag: str,
 
     # this user is a spammer
     df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.user_id != 2581179]
-    df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.subject_id.isin([47969478])] # TODO do not commit
+    # df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.workflow_version == "134.236"] # DO NOT COMMIT
+
+    # df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.subject_id.isin([47969478])] # TODO do not commit
+
     df_zooniverse_data.to_csv(flatdataset_path, index=False)
     logger.info(f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
     ds_stats.append({"filename": f"{flatdataset_path.name}",
@@ -318,7 +324,6 @@ def data_prep(phase_tag: str,
         image_names = None
 
     output_path.mkdir(exist_ok=True)
-    cache_folder = input_path.joinpath(f"cache_{phase_tag}")
 
     # get all the expert count goldstandart data
     goldstandard_expert_count_data = config["goldstandard_data"]
@@ -346,7 +351,6 @@ def data_prep(phase_tag: str,
     ## flatten, filter and metadata to it
     df_merged_dataset = process_zooniverse_phases_flat(df_zooniverse_flat=df_zooniverse_data,
                                                        image_source=image_source,
-                                                       cache_folder=cache_folder,
                                                        image_names=image_names,
                                                        subject_ids=subject_ids_filter,
                                                        filter_func=filter_remove_marks

@@ -77,6 +77,8 @@ class DataPrepTestCase(unittest.TestCase):
 
         self.assertEqual(['Unnamed: 0',
                           'flight_site_code',
+                          'workflow_id',
+                          'workflow_version',
                           'image_name',
                           'subject_id',
                           'x',

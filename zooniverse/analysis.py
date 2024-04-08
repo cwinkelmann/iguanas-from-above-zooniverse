@@ -31,7 +31,7 @@ from zooniverse.utils.basic_clustering import (
 )
 from zooniverse.utils.plotting import plot_clusters_v2
 
-def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
+def get_all_image_paths(image_source: Path) -> pd.DataFrame:
     """
     search for images in subfolders which we use to join the real path to the dataframe with classification report
 
