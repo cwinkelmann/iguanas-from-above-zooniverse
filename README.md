@@ -30,11 +30,16 @@ pip install -U git+https://github.com/zooniverse/aggregation-for-caesar.git
 ```
 
 The workflow ids for phase 1,2,3 are : 14370, 20600, 22040
+
 # crate the config file
 ```bash
 panoptes_aggregation config /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-workflows.csv 14370 
 ```
 
+```bash
+panoptes_aggregation config /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-workflows.csv 14370 --min_version 0 --max_version 142.245
+
+```
 
 ```bash
 ## extraction 

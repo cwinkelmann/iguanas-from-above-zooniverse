@@ -193,8 +193,8 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
 
                 task_information = json.loads(row[idx_TASK_INFORMATION])
                 subject_id = int(row[idx_SUBJECT_IDS])
-                if subject_id == 47969478:
-                    print("found 47969478")
+
+
                 ## Are there any Iguanas?
                 if task_information[TASK_LABEL_ARE_THERE_ANY_IGUANAS]["task"] == "T0" and phase_information in phase_tags:  ## is there anything?
 
@@ -413,16 +413,11 @@ def data_prep_all(phase_tag: str,
     image_names = None
 
     output_path.mkdir(exist_ok=True)
-    cache_folder = input_path.joinpath(f"cache_{phase_tag}")
-
-
-
     subject_ids_filter = None
 
     ## flatten, filter and metadata to it
     df_merged_dataset = process_zooniverse_phases_flat(df_zooniverse_flat=df_zooniverse_data,
                                                        image_source=None,
-                                                       cache_folder=cache_folder,
                                                        image_names=image_names,
                                                        subject_ids=subject_ids_filter,
                                                        filter_func=filter_remove_marks,

@@ -76,6 +76,10 @@ def get_config(phase_tag, input_path, output_path=None):
     configs[phase_tag]["flat_dataset"] = output_path.joinpath(
         f"flat_dataset_{phase_tag}.csv")
 
+    # the flattened dataset of zooniverse classifications based on the panoptes tool
+    configs[phase_tag]["flat_panoptes_points"] = output_path.joinpath(
+        f"flat_panoptes_points_{phase_tag}.csv")
+
     ### filtered datasets
     configs[phase_tag]["merged_dataset"] = output_path.joinpath(
         f"flat_dataset_filtered_{phase_tag}.csv")
@@ -169,6 +173,10 @@ def get_config_all(phase_tag, input_path, output_path=None):
     # the flattened dataset of zooniverse classifications
     configs[phase_tag]["flat_dataset"] = output_path.joinpath(
         f"flat_dataset_{phase_tag}.csv")
+
+    # the flattened dataset of zooniverse classifications based on the panoptes tool
+    configs[phase_tag]["flat_panoptes_points"] = output_path.joinpath(
+        f"flat_panoptes_points_{phase_tag}.csv")
 
     ### filtered datasets
     configs[phase_tag]["merged_dataset"] = output_path.joinpath(
