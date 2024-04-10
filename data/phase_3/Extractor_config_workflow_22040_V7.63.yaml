@@ -7,7 +7,6 @@ extractor_config:
         - 1
         - 2
         - 3
-        - 4
     -   details: {}
         task: T4
         tools:
@@ -18,7 +17,16 @@ extractor_config:
         - 4
         - 5
         - 6
+        - 7
     question_extractor:
     -   task: T0
-workflow_id: 14370
-workflow_version: '134.236'
+    shape_extractor_rectangle:
+    -   details:
+            T4_tool8:
+            - question_extractor
+        shape: rectangle
+        task: T4
+        tools:
+        - 8
+workflow_id: 22040
+workflow_version: '7.63'
