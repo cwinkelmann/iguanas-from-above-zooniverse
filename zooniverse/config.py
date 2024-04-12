@@ -79,6 +79,9 @@ def get_config(phase_tag, input_path, output_path=None):
     # the flattened dataset of zooniverse classifications based on the panoptes tool
     configs[phase_tag]["flat_panoptes_points"] = output_path.joinpath(
         f"flat_panoptes_points_{phase_tag}.csv")
+    configs[phase_tag]["panoptes_question"] = output_path.joinpath(
+        f"panoptes_question_{phase_tag}.csv")
+
 
     ### filtered datasets
     configs[phase_tag]["merged_dataset"] = output_path.joinpath(
@@ -94,6 +97,8 @@ def get_config(phase_tag, input_path, output_path=None):
     ### ===== calculated metrics =====
     ### comparison of the methods per image
     configs[phase_tag]["comparison_dataset"] = output_path.joinpath(f"{phase_tag}_method_comparison.csv")
+    configs[phase_tag]["comparison_dataset_expert"] = output_path.joinpath(f"{phase_tag}_method_comparison_expert.csv")
+    configs[phase_tag]["comparison_dataset_yes_no"] = output_path.joinpath(f"{phase_tag}_method_comparison_yes_no.csv")
 
     ## sums of the methods for each image individually
     configs[phase_tag]["method_sums"] = output_path.joinpath(f"{phase_tag}_method_sums.csv")
@@ -177,6 +182,8 @@ def get_config_all(phase_tag, input_path, output_path=None):
     # the flattened dataset of zooniverse classifications based on the panoptes tool
     configs[phase_tag]["flat_panoptes_points"] = output_path.joinpath(
         f"flat_panoptes_points_{phase_tag}.csv")
+    configs[phase_tag]["panoptes_question"] = output_path.joinpath(
+        f"panoptes_question_{phase_tag}.csv")
 
     ### filtered datasets
     configs[phase_tag]["merged_dataset"] = output_path.joinpath(
@@ -186,6 +193,8 @@ def get_config_all(phase_tag, input_path, output_path=None):
     ### ===== calculated metrics =====
     ### comparison of the methods per image
     configs[phase_tag]["comparison_dataset"] = output_path.joinpath(f"{phase_tag}_method_comparison.csv")
+    configs[phase_tag]["comparison_dataset_expert"] = output_path.joinpath(f"{phase_tag}_method_comparison_expert.csv")
+    configs[phase_tag]["comparison_dataset_yes_no"] = output_path.joinpath(f"{phase_tag}_method_comparison_yes_no.csv")
 
     ## sums of the methods for each image individually
     configs[phase_tag]["method_sums"] = output_path.joinpath(f"{phase_tag}_method_sums.csv")

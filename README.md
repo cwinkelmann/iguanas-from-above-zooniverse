@@ -12,14 +12,6 @@ If the installation doesn't work, try to install the packages one by one:
 pip install matplotlib jupyterlab pandas scikit-learn loguru black pytest
 ```
 
-## Usage
-The Notebooks [Zooniverse_Clustering](./Zooniverse_Clustering.ipynb) illustrates the process to cluster the marks set by volunteers on zooniverse. 
-Run jupyterlab first via 
-```bash
-jupyter lab
-```
-It requires some files defined in the config.py file. They are relative to the input_path, so if the file "iguanas-from-above-classifications.csv" is located at "/User/ABC/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv" the input_path needs to be /User/ABC but the config is set.
-
 ## installing panoptes aggregation
 ```bash
 # https://aggregation-caesar.zooniverse.org/README.html
@@ -28,32 +20,19 @@ It requires some files defined in the config.py file. They are relative to the i
 pip install -U git+https://github.com/zooniverse/aggregation-for-caesar.git
 
 ```
+## Usage
+The process is split in two steps. The first is extracting a flat datastructure using the panoptes aggregation package from zooniverse. An alternative was developed using a custom iterator. This data prep is bundled in this Notebook [Panoptes Data Prep](./Panoptes_Data_Prep.ipynb).  These require the classification report "iguanas-from-above-classifications.csv" and the subjects export "iguanas-from-above-subjects.csv"
 
-The workflow ids for phase 1,2,3 are : 14370, 20600, 22040
+The Notebook [Zooniverse_Clustering](./Zooniverse_Clustering_all_panoptics.ipynb) illustrates the process to cluster the marks set by volunteers on zooniverse. The necessary data from the previous step is in the [data folder](./data/zooniverse)
 
-# crate the config file
+
+Run jupyterlab first via
 ```bash
-panoptes_aggregation config /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-workflows.csv 14370 
+jupyter lab
 ```
 
-```bash
-panoptes_aggregation config /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-workflows.csv 14370 --min_version 0 --max_version 142.245
+It requires some files defined in the config.py file. They are relative to the input_path, so if the file "iguanas-from-above-classifications.csv" is located at "/User/ABC/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv" the input_path needs to be /User/ABC but the config is set.
 
-```
-
-```bash
-## extraction 
-panoptes_aggregation extract /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv -d /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/panoptes Extractor_config_workflow_14370_V142.245.yaml
-
-
-```
-
-The right version id
-
-
-```bash
-panoptes_aggregation extract /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv -d /Users/christian/data/zooniverse/IguanasFromAbove/2023-10-15/panoptes Extractor_config_workflow_14370_V134.236.yaml
-```
 
 ```python
 from pathlib import Path
