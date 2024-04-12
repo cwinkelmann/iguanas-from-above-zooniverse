@@ -1,8 +1,6 @@
 import glob
-import json
-import random
-import shutil
 import statistics
+from typing import Optional
 
 from kneed import KneeLocator
 from matplotlib import pyplot as plt
@@ -31,20 +29,9 @@ from zooniverse.utils.basic_clustering import (
     get_curve_shape,
     bic_score,
 )
-from zooniverse.utils.plotting import plot_clusters, plot_clusters_v2
+from zooniverse.utils.plotting import plot_clusters_v2
 
-BOX_SIZE = 60
-
-## a list of users which are supposed to be trustworthy
-trustworthy_users = [
-    "Pamelavans" "robert1601",
-    "Darkstar1977",
-    "H.axon",
-    "Quynhanhdo" "Taylor_Q" "databanana" "Heuvelmans" "Big_Ade" "babyemperor" "HW1881",
-]
-
-
-def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
+def get_all_image_paths(image_source: Path) -> pd.DataFrame:
     """
     search for images in subfolders which we use to join the real path to the dataframe with classification report
 
@@ -56,22 +43,13 @@ def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
     """
     if image_source is None:
         return None
-    # metadata_file = cache_dir.joinpath("image_paths_metadata.json")
 
-    # if not Path(metadata_file).is_file():
-    #     logger.info(f"WAIT: {metadata_file} file doesn't exist")
-
-    # image_list = glob.glob(str(image_source.joinpath("*/*/*.jpg")))
     image_list = glob.glob(str(image_source.joinpath("**/*.jpg")), recursive=True)
 
     if len(image_list) == 0:
         logger.warning(f"Found {len(image_list)} images in the folder {image_source}")
 
     images_split_list = [Path(x).parts for x in image_list]
-    image_list = [
-        {"mission_name": x[-2], "image_name": x[-1], "image_path": Path(*list(x))}
-        for x in images_split_list
-    ]
 
     image_dict = {
         x[-1]: {
@@ -91,18 +69,6 @@ def get_all_image_paths(image_source: Path, cache_dir: Path) -> pd.DataFrame:
 
         im.close()
 
-        # with open(metadata_file, 'w+') as f:
-        #     logger.info(f"Wrote: {metadata_file} which contains the image metadata")
-        #     json.dump(image_dict, f)
-    #
-    # else:
-    #     logger.info(f"OK: {metadata_file} file does exist")
-    #
-    #     with open(metadata_file, 'r') as f:
-    #         image_dict = json.load(f)
-
-    ## FIXME the image_list and the image_dict have a different length, meaning there are images in there twice
-
     logger.info("done with processing Image Metadata.")
     return pd.DataFrame(image_dict).T
 
@@ -114,10 +80,6 @@ def deduplicate_entries(merged_dataset):
     :param merged_dataset:
     :return:
     """
-
-    image_index_mapping = pd.DataFrame(merged_dataset)["image_name"].reset_index(
-        drop=False
-    )
     # iterate over the dataset and merge the marks
     compacted_marks_per_data_frame = []
     marks_per_data_frame = (
@@ -152,7 +114,7 @@ def get_mark_overview(df_marks):
     :return:
     """
 
-    annotations_count = list(df_marks.groupby("user_name")["user_name"].count())
+    annotations_count = sorted(list(df_marks.groupby("user_name")["user_name"].count()))
 
     return annotations_count
 
@@ -181,7 +143,7 @@ def reformat_marks(metadata_record_FMO01_68):
 
 
 def get_estimated_DBSCAN_count(
-    df_marks, image_name, params, output_path=None, plot=False
+    df_marks, image_name, subject_id, params, output_path: Optional[Path] = None, plot=False
 ):
     """
     DBSCAN clustering
@@ -206,7 +168,6 @@ def get_estimated_DBSCAN_count(
     # Number of clusters in labels, ignoring noise if present.
     n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
     n_noise_ = list(labels).count(-1)
-    # logger.info(f"processing {image_name} with eps {eps} and min_samples {min_samples}, n_clusters_ {n_clusters_}")
 
     unique_labels = set(labels)
     core_samples_mask = np.zeros_like(labels, dtype=bool)
@@ -243,12 +204,12 @@ def get_estimated_DBSCAN_count(
         )
 
     plt.title(
-        f"DBSCAN: {n_clusters_} for eps={eps} and min_samples={min_samples} for {image_name}"
+        f"DBSCAN: {n_clusters_} for eps={eps} and min_samples={min_samples} for {image_name} {subject_id}"
     )
     ax.invert_yaxis()
     if output_path:
         fig.savefig(
-            output_path.joinpath(f"{image_name}_dbscan_{eps}_{min_samples}.png")
+            output_path.joinpath(f"{image_name}_{subject_id}_dbscan_{eps}_{min_samples}.png")
         )
     if plot:
         plt.show()
@@ -261,6 +222,7 @@ def get_estimated_DBSCAN_count(
         # logger.warning(f"DBSCAN found {n_clusters_} clusters for {image_name}")
         return {
             "image_name": image_name,
+            "subject_id": subject_id,
             "dbscan_count": n_clusters_,
             "dbscan_noise": n_noise_,
             "dbscan_silouette_score": None,
@@ -270,9 +232,10 @@ def get_estimated_DBSCAN_count(
     result[f"dbscan_count"] = n_clusters_
     result[f"dbscan_noise"] = n_noise_
     result[f"dbscan_silouette_score"] = metrics.silhouette_score(X, labels)
-    result[f"dbscan_BIC_score"] = bic_score(X, labels)
+    # result[f"dbscan_BIC_score"] = bic_score(X, labels)
 
     result["image_name"] = image_name
+    result["subject_id"] = subject_id
     return result
 
 
@@ -281,6 +244,7 @@ def kmeans_knee(
 ):
     """
     estimate the location of objects using the elbow method
+
     :param df_marks:
     :param annotations_count:
     :param output_path:
@@ -644,12 +608,11 @@ def kmeans_BIC(
     }
 
 
-def HDBSCAN_Wrapper(
+def hdbscan(
     df_marks,
-    annotations_count,
     image_name,
+    subject_id,
     params,
-    min_cluster_size=3,
     plot=False,
     show=False,
     output_path: Path = None,
@@ -693,13 +656,14 @@ def HDBSCAN_Wrapper(
                 figure_title=f"HDBSCAN Clustering for {image_name}",
                 main_title=f"n={len(clusterer.centroids_)} eps={eps} min_cluster_size={min_cluster_size} max_cluster_size={max_cluster_size}",
             )
-
-        bic_avg = bic_score(X, cluster_labels)
+        # calculate the Baysian Information Criterion (BIC) score
+        # bic_avg = bic_score(X, cluster_labels)
         bic_avg = {
             "image_name": image_name,
+            "subject_id": subject_id,
             "with_noise": True,
             "HDBSCAN_count": len(clusterer.centroids_),
-            "bic_avg": bic_avg,
+            # "bic_avg": bic_avg,
             "eps": eps,
             "min_cluster_size": min_cluster_size,
             "max_cluster_size": max_cluster_size,
@@ -709,7 +673,7 @@ def HDBSCAN_Wrapper(
 
     df_bics = pd.DataFrame(bics)
     if output_path is not None:
-        df_bics.to_csv(output_path.joinpath(f"{image_name}_hdbscan_bic.csv"))
+        df_bics.to_csv(output_path.joinpath(f"{image_name}_{subject_id}_hdbscan_bic.csv"))
 
     return df_bics
 
@@ -755,25 +719,31 @@ def stats_calculation(df_exp):
     return df_exp, df_exp_sum, pd.Series(mse_errors)
 
 
-def get_annotation_count_stats(annotations_count, image_name):
+def get_annotation_count_stats(annotations_count, image_name, subject_id):
     """
     build a dictionary with the statistics of the annotations count
     :param annotations_count:
     :param image_name:
     :return:
     """
+    annotations_count = sorted(annotations_count)
+
     return {
         "image_name": image_name,
+        "subject_id": subject_id,
         "median_count": statistics.median(annotations_count),
         "mean_count": round(statistics.mean(annotations_count), 2),
-        "mode_count": statistics.mode(annotations_count),
+        "mode_min_count": statistics.mode(sorted(annotations_count), ), # normal mode with the ascending
+        "mode_max_count": statistics.mode(sorted(annotations_count, reverse=True)), # normal mode with descending order
+        "mode_count": statistics.multimode(annotations_count), # multimodal mode
+        "mode_count_avg": pd.Series(statistics.multimode(annotations_count)).mean(), # average the multi modes
         "users": len(annotations_count),
         "sum_annotations_count": sum(annotations_count),
-        "annotations_count": sorted(annotations_count),
+        "annotations_count": annotations_count,
     }
 
 
-def compare_dbscan_hyp_v2(df_flat, params, output_plot_path: Path, plot=False):
+def compare_dbscan(df_flat: pd.DataFrame, params, output_plot_path: Path, plot=False):
     """
     run dbscan clustering on all images and compare the results with the gold standard
 
@@ -785,11 +755,13 @@ def compare_dbscan_hyp_v2(df_flat, params, output_plot_path: Path, plot=False):
     dbscan_localizations = []
 
     image_name = df_flat.iloc[0]["image_name"]
+    subject_id = df_flat.iloc[0]["subject_id"]
     for eps, min_samples in params:
         ds_SCAN_localization = get_estimated_DBSCAN_count(
             df_marks=df_flat[["x", "y"]],
             output_path=output_plot_path,
             plot=plot,
+            subject_id=subject_id,
             image_name=image_name,
             params=(eps, min_samples),
         )

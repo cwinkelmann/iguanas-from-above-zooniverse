@@ -2,7 +2,7 @@ import pandas as pd
 from loguru import logger
 
 
-def filter_df_user_threshold(df_, user_threshold=None):
+def filter_df_user_threshold(df_: pd.DataFrame, user_threshold=None) -> pd.DataFrame:
     """
     threshold means how many marks should exist in for an image. Otherwise, it is considered noise.
 
@@ -26,15 +26,15 @@ def filter_df_user_threshold(df_, user_threshold=None):
     return pd.concat(ls_groups)
 
 
-def filter_remove_marks(df: pd.DataFrame):
-    """
-    remove marks, for partials etc
-    :param df:
-    :return:
+def filter_remove_marks(df: pd.DataFrame) -> pd.DataFrame:
+    """ remove marks, for partials etc
+
+    :param df: the dataframe
+    :return: the filtered dataframe
     """
     df_partials = df[df["tool_label"].isin(["Partial iguana"])]
     # remove partials
-    df = df[~df["tool_label"].isin(["Partial iguana"])]
+    df = df[~df["tool_label"].isin(["Partial iguana", "Could be an iguana, not sure"])]
     logger.warning(f"removed {len(df_partials)} partial marks")
     logger.warning(f"After filter_func {len(df.image_name.unique())} images are left")
     return df

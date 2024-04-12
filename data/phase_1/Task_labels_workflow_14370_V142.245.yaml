@@ -1,0 +1,26 @@
+T0.answers.0.label: 'Yes'
+T0.answers.1.label: 'No'
+T0.answers.2.label: Blurry or too dark
+T0.question: Do you see any **MARINE IGUANAS** in the photo? Remember to follow the
+    zigzag pattern when searching and try the option to invert image color in the
+    bottom right corner for help. Look carefully! Don't forget to check the Field
+    Guide and Help Text. Please select Yes only when you are sure.
+T2.instruction: Identify **marine iguanas** in this photo. Mark them all! Check the
+    Field Guide and Help Text for helpful example images.
+T2.tools.0.label: Adult Male in a lek
+T2.tools.1.label: Adult Male alone
+T2.tools.2.label: Others (females, young males, juveniles)
+T2.tools.3.label: Partial iguana
+T2.tools.4.label: Could be an iguana, not sure
+T4.instruction: '**Final Task.** Do you see other animal species, vegetation or plastic
+    objects in this photo? Please mark them all - you can hide previous marks. The
+    list below includes the most **common** but if see something else, click Talk
+    & Done and tell us what you found. If nothing else, just click Done! Remember
+    to check the Field Guide and Help Text for ID and marking help.'
+T4.tools.0.label: Sea lions
+T4.tools.1.label: Birds
+T4.tools.2.label: Turtles
+T4.tools.3.label: Crabs
+T4.tools.4.label: Plastics
+T4.tools.5.label: Algae and Plants
+T4.tools.6.label: Unknown/Others
