@@ -1,0 +1,11 @@
+,0
+count_total,351.0
+median_count,315.5
+mean_count,381.51000000000005
+mode_min_count,294.0
+mode_max_count,312.0
+mode_count_avg,303.6666666666667
+mode_min_count,294.0
+mode_max_count,312.0
+dbscan_count_sil,335.0
+HDBSCAN_count,358.0
