@@ -32,10 +32,13 @@ def filter_remove_marks(df: pd.DataFrame) -> pd.DataFrame:
     :param df: the dataframe
     :return: the filtered dataframe
     """
+    marks_before = len(df)
+    logger.info(f"before filter func: {marks_before}")
     df_partials = df[df["tool_label"].isin(["Partial iguana"])]
     # remove partials
     df = df[~df["tool_label"].isin(["Partial iguana", "Could be an iguana, not sure"])]
     logger.warning(f"removed {len(df_partials)} partial marks")
+    logger.warning(f"removed {marks_before} marks")
     logger.warning(f"After filter_func {len(df.image_name.unique())} images are left")
     return df
 
