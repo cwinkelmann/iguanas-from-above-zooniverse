@@ -488,7 +488,10 @@ def anonymise_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
 
     return df
 
-def data_prep_panoptes(df_panoptes_point_extractor, df_panoptes_question, df_subjects, output_path):
+def data_prep_panoptes(df_panoptes_point_extractor: pd.DataFrame,
+                       df_panoptes_question: pd.DataFrame,
+                       df_subjects: pd.DataFrame,
+                       config: dict):
     """
     scripted version from the notebook step by step instruction
     There is no point to wrap the config creation, data extraction and point_extractor/question extractor files.
@@ -496,28 +499,9 @@ def data_prep_panoptes(df_panoptes_point_extractor, df_panoptes_question, df_sub
 
 
     """
-    phase_tag = "Iguanas 2nd launch"
-    data_folder = "./data/phase_2"
-
-    # phase_tag = "Iguanas 3rd launch"
-    # data_folder = "./data/phase_3"
-
-    workflow_id_p1 = 14370.0
-    workflow_id_p2 = 20600.0
-    workflow_id_p3 = 22040.0
-
-    input_path = Path("/Users/christian/data/zooniverse")
-
-    # use_gold_standard_subset = "expert" # Use the expert-GS-Xphase as the basis
-    output_path = Path("/Users/christian/data/zooniverse/2024_04_16_analysis").joinpath(phase_tag).resolve()
-
-    config = get_config(phase_tag=phase_tag, input_path=input_path, output_path=output_path)
-    df_subjects = pd.read_csv("./data/zooniverse/iguanas-from-above-subjects.csv", sep=",")
-
-    df_subjects = df_subjects[df_subjects.workflow_id.isin([workflow_id_p1, workflow_id_p2, workflow_id_p3])]
-
     df_panoptes_point_extractor = df_panoptes_point_extractor.merge(df_subjects[["subject_id", "image_name"]],
                                                                     left_on="subject_id", right_on="subject_id")
+
     df_panoptes_point_extractor = df_panoptes_point_extractor[
         df_panoptes_point_extractor.subject_id.isin(df_subjects.subject_id)]
 
