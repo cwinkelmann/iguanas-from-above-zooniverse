@@ -1,0 +1,7 @@
+matplotlib
+jupyterlab
+pandas
+scikit-learn
+loguru
+black
+pytest
