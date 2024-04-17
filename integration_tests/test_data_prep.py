@@ -1,11 +1,9 @@
 import unittest
 from pathlib import Path
-
 import pandas as pd
 
 from zooniverse.config import get_config, get_config_all
 from zooniverse.utils.data_format import data_prep, data_prep_all
-
 
 class DataPrepTestCase(unittest.TestCase):
 
