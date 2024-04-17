@@ -491,7 +491,7 @@ def anonymise_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
 def data_prep_panoptes(df_panoptes_point_extractor: pd.DataFrame,
                        df_panoptes_question: pd.DataFrame,
                        df_subjects: pd.DataFrame,
-                       config: dict):
+                       config: dict) -> tuple[pd.DataFrame, pd.DataFrame]:
     """
     scripted version from the notebook step by step instruction
     There is no point to wrap the config creation, data extraction and point_extractor/question extractor files.
@@ -518,7 +518,7 @@ def data_prep_panoptes(df_panoptes_point_extractor: pd.DataFrame,
     df_panoptes_question_r = df_panoptes_question_r.reset_index()
     df_panoptes_question_r = df_panoptes_question_r[df_panoptes_question_r.subject_id.isin(df_subjects.subject_id)]
 
-    df_panoptes_question_r.to_csv(output_path / config["panoptes_question"], index=False)
+    df_panoptes_question_r.to_csv(config["panoptes_question"], index=False)
 
     # Filter for T2 only
     df_panoptes_point_extractor_r = df_panoptes_point_extractor[
@@ -557,4 +557,11 @@ def data_prep_panoptes(df_panoptes_point_extractor: pd.DataFrame,
     df_panoptes_point_extractor_r_ex_dropped = df_panoptes_point_extractor_r_ex.dropna(subset=['x', 'y'],
                                                                                        how='all').sort_values(
         by=['user_id', 'subject_id', 'task', 'created_at'])
-    df_panoptes_point_extractor_r_ex_dropped
+
+    # cast x and y to int
+    df_panoptes_point_extractor_r_ex_dropped = df_panoptes_point_extractor_r_ex_dropped.astype(
+        {'x': 'int32', 'y': 'int32'})
+
+    df_panoptes_point_extractor_r_ex_dropped.to_csv(config["flat_panoptes_points"], sep=",", index=False)
+
+    return df_panoptes_question_r, df_panoptes_point_extractor_r_ex_dropped
