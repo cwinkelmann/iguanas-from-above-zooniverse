@@ -6,3 +6,4 @@ kneed
 loguru
 black
 pytest
+seaborn
