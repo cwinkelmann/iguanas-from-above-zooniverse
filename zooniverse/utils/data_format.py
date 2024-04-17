@@ -3,9 +3,11 @@ import shutil
 from csv import reader
 import glob
 from pathlib import Path
+from time import sleep
 from typing import Optional
 
 import pandas as pd
+import requests
 from loguru import logger
 
 from zooniverse.config import get_config
@@ -437,3 +439,138 @@ def data_prep_all(phase_tag: str,
     pd.DataFrame(ds_stats).to_csv(output_path.joinpath(f"ds_stats_{phase_tag}.csv"))
 
     return pd.DataFrame(ds_stats)
+
+def download_image(url, filename):
+    """download an url to a file"""
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            with open(filename, 'wb') as file:
+                file.write(response.content)
+            return True
+        else:
+            logger.warning(f"Failed to download {url}")
+            logger.error(response)
+            sleep(5)
+            return False
+    except Exception as e:
+        logger.error(e)
+        sleep(5)
+        return False
+
+
+def harmonize_field_names(df_subjects: pd.DataFrame) -> pd.DataFrame:
+    """
+    :param df_subjects:
+    :return:
+    """
+    df_subjects["image_name"] = df_subjects['metadata'].apply(lambda x: json.loads(x).get('Image_name')
+                                            or json.loads(x).get('image_name')
+                                            or json.loads(x).get('Filename')).sort_values(ascending=True)
+
+    # 'site', 'flight', 'Flight', 'Site', 'flight_code' depict the same
+    df_subjects["flight_code"] = df_subjects['metadata'].apply(lambda x: json.loads(x).get('flight_code')
+                                            or json.loads(x).get('site')
+                                            or json.loads(x).get('flight')
+                                            or json.loads(x).get('Flight')
+                                            or json.loads(x).get('Site')).sort_values(ascending=True)
+
+    df_subjects["url"] = df_subjects['locations'].apply(lambda x: json.loads(x)["0"])
+    df_subjects["filepath"] = None
+
+    return df_subjects
+
+def anonymise_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
+    from hashlib import blake2b
+
+    df[column_name] = df[column_name].apply(
+        lambda x: blake2b(str(x).encode(), digest_size=16).hexdigest() if not pd.isnull(x) else x)
+
+    return df
+
+def data_prep_panoptes(df_panoptes_point_extractor, df_panoptes_question, df_subjects, output_path):
+    """
+    scripted version from the notebook step by step instruction
+    There is no point to wrap the config creation, data extraction and point_extractor/question extractor files.
+
+
+
+    """
+    phase_tag = "Iguanas 2nd launch"
+    data_folder = "./data/phase_2"
+
+    # phase_tag = "Iguanas 3rd launch"
+    # data_folder = "./data/phase_3"
+
+    workflow_id_p1 = 14370.0
+    workflow_id_p2 = 20600.0
+    workflow_id_p3 = 22040.0
+
+    input_path = Path("/Users/christian/data/zooniverse")
+
+    # use_gold_standard_subset = "expert" # Use the expert-GS-Xphase as the basis
+    output_path = Path("/Users/christian/data/zooniverse/2024_04_16_analysis").joinpath(phase_tag).resolve()
+
+    config = get_config(phase_tag=phase_tag, input_path=input_path, output_path=output_path)
+    df_subjects = pd.read_csv("./data/zooniverse/iguanas-from-above-subjects.csv", sep=",")
+
+    df_subjects = df_subjects[df_subjects.workflow_id.isin([workflow_id_p1, workflow_id_p2, workflow_id_p3])]
+
+    df_panoptes_point_extractor = df_panoptes_point_extractor.merge(df_subjects[["subject_id", "image_name"]],
+                                                                    left_on="subject_id", right_on="subject_id")
+    df_panoptes_point_extractor = df_panoptes_point_extractor[
+        df_panoptes_point_extractor.subject_id.isin(df_subjects.subject_id)]
+
+    # data anonymisation
+    df_panoptes_point_extractor = anonymise_column(df_panoptes_point_extractor, "user_id")
+    df_panoptes_point_extractor = anonymise_column(df_panoptes_point_extractor, "user_name")
+    df_panoptes_question = anonymise_column(df_panoptes_question, "user_id")
+    df_panoptes_question = anonymise_column(df_panoptes_question, "user_name")
+
+    # question data summary
+    df_panoptes_question_r = df_panoptes_question[df_panoptes_question.task == "T0"][
+        ["subject_id", "data.no", "data.yes"]].groupby("subject_id").sum()
+
+    df_panoptes_question_r = df_panoptes_question_r.reset_index()
+    df_panoptes_question_r = df_panoptes_question_r[df_panoptes_question_r.subject_id.isin(df_subjects.subject_id)]
+
+    df_panoptes_question_r.to_csv(output_path / config["panoptes_question"], index=False)
+
+    # Filter for T2 only
+    df_panoptes_point_extractor_r = df_panoptes_point_extractor[
+        (df_panoptes_point_extractor.task == "T2")
+    ]
+
+    # create a flat structure from the nested marks over multiple columns from that.
+    from ast import literal_eval
+
+    columns_keep_x = ['data.frame0.T2_tool0_x', 'data.frame0.T2_tool1_x', 'data.frame0.T2_tool2_x']
+    columns_keep_y = ['data.frame0.T2_tool0_y', 'data.frame0.T2_tool1_y', 'data.frame0.T2_tool2_y']
+
+    for col in columns_keep_x + columns_keep_y:
+        df_panoptes_point_extractor_r[col] = df_panoptes_point_extractor_r[col].apply(lambda x: literal_eval(x) if pd.notnull(x) else [])
+
+    # Merge the lists in 'x' and 'y' coordinates
+    df_panoptes_point_extractor_r['x'] = df_panoptes_point_extractor_r[columns_keep_x].values.tolist()
+    df_panoptes_point_extractor_r['y'] = df_panoptes_point_extractor_r[columns_keep_y].values.tolist()
+
+    # Flatten the lists in each row for 'x' and 'y'
+    df_panoptes_point_extractor_r['x'] = df_panoptes_point_extractor_r['x'].apply(lambda x: [item for sublist in x for item in sublist])
+    df_panoptes_point_extractor_r['y'] = df_panoptes_point_extractor_r['y'].apply(lambda x: [item for sublist in x for item in sublist])
+
+    # Drop the columns that are not needed anymore
+    df_panoptes_point_extractor_r = df_panoptes_point_extractor_r[
+        ['classification_id', 'user_name', 'user_id', 'workflow_id', 'workflow_version', 'task',
+         'created_at', 'subject_id', "image_name",
+         'x', 'y'
+         ]].reset_index(drop=True)
+
+    # explode the lists of marks per user into one row per mark
+    df_panoptes_point_extractor_r_ex = df_panoptes_point_extractor_r.apply(
+        lambda x: x.explode() if x.name in ['x', 'y'] else x)
+
+    # images with no marks have NaN values in the 'merged_x' and 'merged_y' columns
+    df_panoptes_point_extractor_r_ex_dropped = df_panoptes_point_extractor_r_ex.dropna(subset=['x', 'y'],
+                                                                                       how='all').sort_values(
+        by=['user_id', 'subject_id', 'task', 'created_at'])
+    df_panoptes_point_extractor_r_ex_dropped

@@ -22,9 +22,13 @@ class DataPrepTestCase(unittest.TestCase):
                           'image_source',
                           'yes_no_dataset',
                           'flat_dataset',
+                          'flat_panoptes_points',
+                          'panoptes_question',
                           'merged_dataset',
                           'gold_standard_and_expert_count',
                           'comparison_dataset',
+                          'comparison_dataset_expert',
+                          'comparison_dataset_yes_no',
                           'method_sums',
                           'rmse_errors',
                           'dbscan_hyperparam_grid'], list(config.keys()))
@@ -33,10 +37,16 @@ class DataPrepTestCase(unittest.TestCase):
             '/Users/A/B/C/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv'),
             'comparison_dataset': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_comparison.csv'),
+            'comparison_dataset_expert': Path('/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_comparison_expert.csv'),
+            'comparison_dataset_yes_no': Path(
+                '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_comparison_yes_no.csv'),
             'dbscan_hyperparam_grid': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_hyperparam_grid.csv'),
             'flat_dataset': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/flat_dataset_Iguanas 1st launch.csv'),
+            'flat_panoptes_points': Path(
+                '/Users/A/B/C/test_analysis/Iguanas 1st launch/flat_panoptes_points_Iguanas 1st launch.csv'),
+
             'gold_standard_and_expert_count': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_gold_standard_and_expert_count.csv'),
             'gold_standard_image_subset': Path(
@@ -48,6 +58,8 @@ class DataPrepTestCase(unittest.TestCase):
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/flat_dataset_filtered_Iguanas 1st launch.csv'),
             'method_sums': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_sums.csv'),
+            'panoptes_question': Path(
+                '/Users/A/B/C/test_analysis/Iguanas 1st launch/panoptes_question_Iguanas 1st launch.csv'),
             'rmse_errors': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_rmse_errors.csv'),
             'yes_no_dataset': Path(
