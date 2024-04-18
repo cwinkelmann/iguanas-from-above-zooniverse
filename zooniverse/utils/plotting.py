@@ -97,7 +97,7 @@ def plot_zooniverse_user_marks_v2(
     """
     fig, ax = plt.subplots(1, figsize=fig_size)
     print(f"show plots: {show}")
-    ## visualise the image
+    # visualise the image
     data = image.imread(image_path)
     pil_im = Image.open(image_path)
     # implot = plt.imshow(data)
