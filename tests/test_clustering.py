@@ -176,7 +176,8 @@ def test_basic_statistics(df_merged_dataset):
         annotations_count = get_mark_overview(df_image_name)
 
         annotations_count_stats = get_annotation_count_stats(annotations_count=annotations_count,
-                                                             image_name=df_image_name.iloc[0]["image_name"])
+                                                             image_name=df_image_name.iloc[0]["image_name"],
+                                                             subject_id=df_image_name.iloc[0]["subject_id"])
 
         ### basic statistics like mean, median
         basic_stats.append(annotations_count_stats)
@@ -194,7 +195,8 @@ def test_basic_statistics_expert(df_merged_dataset, expert_subjectids):
         annotations_count = get_mark_overview(df_image_name)
 
         annotations_count_stats = get_annotation_count_stats(annotations_count=annotations_count,
-                                                             image_name=df_image_name.iloc[0]["image_name"])
+                                                             image_name=df_image_name.iloc[0]["image_name"],
+                                                             subject_id=df_image_name.iloc[0]["subject_id"])
 
         ### basic statistics like mean, median
         basic_stats.append(annotations_count_stats)
@@ -258,7 +260,8 @@ def test_hdbscan_clustering_filtered(df_merged_dataset, expert_subjectids):
             df_hdbscan = hdbscan(df_marks=df_image_name[["x", "y"]],
                                          output_path=None,
                                          image_name=image_name,
-                                         params=[(0.0, 5, None)])
+                                         params=[(0.0, 5, None)],
+                                 subject_id=df_image_name.iloc[0]["subject_id"])
             hdbscan_values.append(df_hdbscan)
 
     df_hdbscan = pd.concat(hdbscan_values)

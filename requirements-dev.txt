@@ -1,0 +1,9 @@
+matplotlib
+jupyterlab
+pandas
+scikit-learn
+kneed
+loguru
+black
+pytest
+seaborn
