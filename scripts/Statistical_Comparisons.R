@@ -1,7 +1,7 @@
 ###########################################################################################################
 # Statistical Analyses - Iguanas from Above
 #
-# Authors: Andres Camilo Marmol Guijarro & Andres Marmol Guijarro
+# Authors: Andres Camilo Marmol Guijarro & Andrea Varela
 ###########################################################################################################
 
 
