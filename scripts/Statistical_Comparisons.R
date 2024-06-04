@@ -1,16 +1,14 @@
 ###########################################################################################################
 # Statistical Analyses - Iguanas from Above
 #
-# Authors: Andrea Varela-Jaramillo & Andres Camilo Marmol Guijarro
+# Authors: Andres Camilo Marmol Guijarro & Andres Marmol Guijarro
 ###########################################################################################################
 
 
-#These analyses uses the filtered GS dataset with expert counts and aggregated (reduce step in panoptes aggregation package) volunteer counts with the median, mode and hdbscan clustering algorithm as methods used to count marine iguanas in the images.
+#These analyses uses the filtered GS dataset with expert counts and aggregated volunteer counts with the median, mode and hdbscan clustering algorithm (obtained with Zooniverve_Clustering pipeline) as methods used to count marine iguanas in the images.
 
 #volunteers counts were calculated on images selected using the 5-volunteer minimum threshold.
-#Code source for previous counts aggretation step: https://github.com/cwinkelmann/iguanas-from-above-zooniverse.
 #partials are not included in these analyses.
-
 
 # Clear environment
 
@@ -36,7 +34,7 @@ dfall2 = dplyr::filter(dfall, expert_count > "0")
 
 ##Reorganize the dataframe for statistical analyses
 dfall3 <- tidyr::gather(dfall2, key = "method", value = "counts",
-                        expert_count, median_count_up, mode_max_count, hdbscan_count)
+                        expert_count, median_count, mode_count, hdbscan_count)
 
 write.csv(dfall3, file="Iguanas all_stats_dataset-tidyr.csv")
 
@@ -232,7 +230,7 @@ dfall_1 = dplyr::bind_rows(dfall_1, dfall11_inf)
 
 #Reorganize the dataframe for statistical analyses
 dfall_2 = tidyr::gather(dfall_1, key = "method", value = "counts",
-                        expert_count, median_count_up, mode_max_count, hdbscan_count)
+                        expert_count, median_count, mode_count, hdbscan_count)
 
 
 write.csv(dfall_2, file="Iguanas all_stats_dataset-quantity-tidyr.csv")
@@ -321,10 +319,10 @@ dfexpert = dfcompare %>%
   filter(method == "expert_count")
 
 dfmedian = dfcompare %>%
-  filter(method == "median_count_up")
+  filter(method == "median_count")
 
 dfmode = dfcompare %>%
-  filter(method == "mode_max_count")
+  filter(method == "mode_count")
 
 dfhdbscan = dfcompare %>%
   filter(method == "hdbscan_count")
