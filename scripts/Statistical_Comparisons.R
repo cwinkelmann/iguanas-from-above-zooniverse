@@ -26,7 +26,7 @@ library(performance)
 
 
 #read the dataframe with all GS images, from the three phases together.
-dfall = read.csv("Iguanas all_stats_dataset.csv", sep=";")
+dfall = read.csv("iguanas-from-above-aggregateddataset-GoldStandard.csv", sep=";")
 names(dfall)
 
 #Extract all images WITH iguanas present (from the expert view)
@@ -210,7 +210,7 @@ pairs(emm1q)
 
 
 #read the dataframe with all GS images, from the three phases together.
-dfall = read.csv("Iguanas all_stats_dataset.csv", sep=";")
+dfall = read.csv("iguanas-from-above-aggregateddataset-GoldStandard.csv", sep=";")
 names(dfall)
 
 #Subset images based on these categories: from 0 to 5 iguanas, from 6 to 10 iguanas and more than 10
