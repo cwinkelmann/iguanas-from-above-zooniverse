@@ -5,7 +5,7 @@
 ###########################################################################################################
 
 
-##This analysis uses the filtered Gold Standard (GS) dataset with Yes and No answers from 20 volunteers aggregated (reduce step in panoptes aggregation package) into 1 answer per image and the expert answer.
+##This analysis uses the filtered Gold Standard (GS) dataset with the 20/30 Yes and No answers aggregated into 1 answer per image (obtained with the Panoptes_Data_Prep pipeline) and the expert answers, for comparisons.
 
 
 ###1. PRESENCE/ABSENCE: compare yes and no answers using a majority vote or most frequent answer criteria (Swanson et al. 2015).
@@ -13,7 +13,7 @@
 #expert answers were added in the column named presence_absence_exp.
 #example for phase 3
 
-GSall <- read.csv("3-TO-GS-comparison.csv", sep = ";") #read the dataset
+GSall <- read.csv("1-TO-GS-comparison.csv", sep = ";") #read the dataset
 names(GSall)
 
 GSall$presence_absence_vol <- ifelse(GSall$presence_yes > GSall$presence_no, 'Y', ifelse(GSall$presence_yes < GSall$presence_no, 'N', 'Y')) #print the selected answer for presence/absence in a new column
@@ -91,7 +91,7 @@ write.csv(GSN, file="3-GS-results_mv_N.csv.csv")
 
 ###2. PRESENCE/ABSENCE: compare yes and no answers looking for the minimum number of volunteers needed for correct identification and accuracy improvement.
 #This first example accepts as correct for iguana presence when at least 1 volunteer from the 20 selected yes.
-#Repeat the analysis for 2 to 11 volunteers.
+#Repeat the analysis from 2 to 11 volunteers.
 GS1 <- read.csv("GS-comparison.csv", sep = ";")
 
 GS1$presence_absence_vol <- ifelse(GS1$presence_yes > 0, 'Y', 'N') #print the selected answer for presence/absence in a new column
@@ -110,7 +110,7 @@ data.frame(table(GS1$comparison))
 (43*100)/1156
 #R: 43.3
 
-#Create data.frame from the 11 results (example).
+#Create data.frame for the 11 results (example).
 dfvol <- data.frame(Criteria = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"), Correct = c(56.7, 86.6, 94.8, 96.3, 96.5, 96.5, 96.5, 96.5, 96.3, 95.8, 95.6), Incorrect =c(43.3, 13.4, 5.2, 3.7, 3.5, 3.5, 3.5, 3.5, 3.7, 4.2, 4.4))
 dfvol
 #R: 5 volunteers identified as the minimun threshold to obtain the highest percentages of accuracy between the volunteers and the experts for iguana presence/absence analysis in our GS dataset.
