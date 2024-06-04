@@ -2,14 +2,14 @@
 Process to cluster marks set by Volunteers on zooniverse
 
 ## Installation
-Python 3.8, 3.9, 3.10 are tested. To install the required packages, run the following command:
+Python 3.9, 3.10, 3.11 are tested. To install the required packages, run the following command:
 ```bash
 pip install -r requirements.txt
 ```
 
-If the installation doesn't work, try to install the packages one by one:
+If the installation doesn't work, try to install the packages as they are install by github:
 ```bash
-pip install matplotlib jupyterlab pandas scikit-learn loguru black pytest
+pip install -r requirements-dev.txt
 ```
 
 ## installing panoptes aggregation
@@ -21,10 +21,9 @@ pip install -U git+https://github.com/zooniverse/aggregation-for-caesar.git
 
 ```
 ## Usage
-The process is split in two steps. The first is extracting a flat datastructure using the panoptes aggregation package from zooniverse. An alternative was developed using a custom iterator. This data prep is bundled in this Notebook [Panoptes Data Prep](./Panoptes_Data_Prep.ipynb).  These require the classification report "iguanas-from-above-classifications.csv" and the subjects export "iguanas-from-above-subjects.csv"
+The process is split in two steps. The first is extracting a flat datastructure using the panoptes aggregation package from zooniverse.  This data prep is bundled in this Notebook [Panoptes Data Prep](./Panoptes_Data_Prep.ipynb).  These require the classification report "iguanas-from-above-classifications.csv" and the subjects export "iguanas-from-above-subjects.csv". An alternative was developed using a custom iterator [010_zooniverse_data_prep](./scripts/010_zooniverse_data_prep.py).
 
-The Notebook [Zooniverse_Clustering](./Zooniverse_Clustering_all_panoptics.ipynb) illustrates the process to cluster the marks set by volunteers on zooniverse. The necessary data from the previous step is in the [data folder](./data/zooniverse)
-
+The Notebook [Zooniverse_Clustering](./Zooniverse_Clustering_all_panoptics.ipynb) illustrates the process to cluster the marks set by volunteers on zooniverse. The necessary data from the previous step is in the [data folder](./data/zooniverse). The file "flat_panoptes_points_[phase]" are the point marks in a flat table structure. "panoptes_questions_[phase]" contains the Yes/No Answers by the volunteers.
 
 Run jupyterlab first via
 ```bash

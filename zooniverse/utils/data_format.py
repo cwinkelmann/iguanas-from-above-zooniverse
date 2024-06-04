@@ -14,6 +14,7 @@ from zooniverse.config import get_config
 from zooniverse.utils.filters import filter_remove_marks
 from zooniverse.analysis import get_all_image_paths
 
+
 def rename_2023_scheme_images_to_zooniverse(image_source: Path):
     """
     get all images in the folder, remove the prefix and use it as a mapping
@@ -50,7 +51,7 @@ def rename_from_schema(df_mapping: pd.DataFrame):
                      axis=1)
 
 
-def group_by_image(merged_dataset, n=None, threshold=None):
+def group_by_image(merged_dataset: list[dict], n=None, threshold=None):
     """
     return list of records for only one image
 
@@ -73,7 +74,6 @@ def group_by_image(merged_dataset, n=None, threshold=None):
     if n is not None:
         records_for_one_image = records_for_one_image[:n]
 
-
     return records_for_one_image
 
 
@@ -83,7 +83,7 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
                                    subject_ids=None,
                                    filter_func=None) -> pd.DataFrame:
     """
-    merge Zooniverse part 2 data with the image dictionary, filter for subjects ids and a custom filter function
+    merge Zooniverse data with the image dictionary, filter for subjects ids and a custom filter function
 
     @param image_source:
     @param cache_folder:
@@ -98,18 +98,20 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
         logger.info(f"filtering the image dataset for  {len(image_names)} images")
         df_zooniverse_flat = df_zooniverse_flat[
             df_zooniverse_flat.image_name.isin(image_names)]
-        logger.info(f"working with {len(df_zooniverse_flat.image_name.unique())} images after filtering with image_names")
+        logger.info(
+            f"working with {len(df_zooniverse_flat.image_name.unique())} images after filtering with image_names")
 
     if subject_ids:
         logger.info(f"filtering the image dataset for  {len(subject_ids)} subject_ids")
         df_zooniverse_flat = df_zooniverse_flat[
             df_zooniverse_flat.subject_id.isin(subject_ids)]
-        logger.info(f"working with {len(df_zooniverse_flat.image_name.unique())} images after filtering with subject_ids")
+        logger.info(
+            f"working with {len(df_zooniverse_flat.image_name.unique())} images after filtering with subject_ids")
 
         difference = set(subject_ids).difference(set(df_zooniverse_flat.subject_id.unique()))
         if len(difference) > 0:
-            logger.warning(f"Some of the subjects ids you used filter are not present in the set. These are: {difference}")
-
+            logger.warning(
+                f"Some of the subjects ids you used filter are not present in the set. These are: {difference}")
 
     image_dict = get_all_image_paths(image_source)
 
@@ -125,7 +127,7 @@ def process_zooniverse_phases_flat(df_zooniverse_flat: pd.DataFrame,
     return df_zooniverse_flat
 
 
-def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = None):
+def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir=None):
     """
     Iterate throughe the zooniverse annotations
 
@@ -153,8 +155,6 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
     TASK_LABEL_MARK_ALL_IGUANAS = 1
     TASK_LABEL_DIFFICULTY_MARKING_IGUANAS = 2
     TASK_LABEL_ANYTHING_ELSE = 3
-
-
 
     n = 0
 
@@ -186,7 +186,6 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
                 labeling_started_at = user_information["started_at"]
                 labeling_finished_at = user_information["finished_at"]
 
-
                 if phase_information in phase_tags:
                     phase_information_passed = True
                     n = n + 1
@@ -196,9 +195,9 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
                 task_information = json.loads(row[idx_TASK_INFORMATION])
                 subject_id = int(row[idx_SUBJECT_IDS])
 
-
-                ## Are there any Iguanas?
-                if task_information[TASK_LABEL_ARE_THERE_ANY_IGUANAS]["task"] == "T0" and phase_information in phase_tags:  ## is there anything?
+                # Are there any Iguanas?
+                if task_information[TASK_LABEL_ARE_THERE_ANY_IGUANAS][
+                    "task"] == "T0" and phase_information in phase_tags:  ## is there anything?
 
                     # create a dataset only the yes/no information
                     yes_no_dataset.append({"phase_tag": phase_information,
@@ -213,8 +212,7 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
 
                     if task_information[TASK_LABEL_ARE_THERE_ANY_IGUANAS]["value"] == "Yes":
                         # yes there are iguanas
-
-                        ## are there any marks
+                        # are there any marks
                         if len(task_information[TASK_LABEL_MARK_ALL_IGUANAS]["value"]) > 0:
                             image_information = json.loads(row[idx_IMAGE_INFORMATION])
 
@@ -222,12 +220,17 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
 
                                 # this has been renamed quite a bit
                                 flight_site_code = image_information_value.get("flight_site_code",
-                                                             image_information_value.get("flight_code", image_information_value.get("Flight")))
+                                                                               image_information_value.get(
+                                                                                   "flight_code",
+                                                                                   image_information_value.get(
+                                                                                       "Flight")))
                                 if flight_site_code is None:
                                     flight_site_code = image_information_value.get("site")
 
-
-                                image_name = image_information_value.get("image_name", image_information_value.get("Image_name", image_information_value.get("Filename")))
+                                image_name = image_information_value.get("image_name",
+                                                                         image_information_value.get("Image_name",
+                                                                                                     image_information_value.get(
+                                                                                                         "Filename")))
                                 if image_name is None:
                                     print(image_information_value)
                                 marks = task_information[TASK_LABEL_MARK_ALL_IGUANAS]['value']
@@ -246,7 +249,6 @@ def read_zooniverse_annotations_v2(annotations_source, phase_tags, cache_dir = N
                                                          "user_id": user_id,
                                                          "user_name": user_name,
                                                          })
-
 
                                 reduced_dataset.append(
                                     {
@@ -311,7 +313,8 @@ def data_prep(phase_tag: str,
     # df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.subject_id.isin([47969478])] # TODO do not commit
 
     df_zooniverse_data.to_csv(flatdataset_path, index=False)
-    logger.info(f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
+    logger.info(
+        f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
     ds_stats.append({"filename": f"{flatdataset_path.name}",
                      "images": len(df_zooniverse_data.groupby('image_name').count())}
                     )
@@ -366,13 +369,15 @@ def data_prep(phase_tag: str,
     df_gold_standard_and_expert = df_gold_standard_image_subset.merge(df_goldstandard_expert_count, on="subject_id")
     df_gold_standard_and_expert.to_csv(output_path.joinpath(f"{config['gold_standard_and_expert_count']}"))
 
-
-    df_goldstandard_expert_count[df_goldstandard_expert_count.subject_id.isin(df_gold_standard_image_subset.subject_id.to_list())].to_csv(config["gold_standard_and_expert_count"])
+    df_goldstandard_expert_count[
+        df_goldstandard_expert_count.subject_id.isin(df_gold_standard_image_subset.subject_id.to_list())].to_csv(
+        config["gold_standard_and_expert_count"])
 
     logger.info(f"working with {len(df_merged_dataset)} records after process function 'process_zooniverse_phases'")
     df_merged_dataset.to_csv(config["merged_dataset"])
     logger.info(f"saved finished dataset to {config['merged_dataset']}")
-    ds_stats.append({"filename": f"{config['merged_dataset'].name}", "images": len(df_merged_dataset.image_name.unique())})
+    ds_stats.append(
+        {"filename": f"{config['merged_dataset'].name}", "images": len(df_merged_dataset.image_name.unique())})
 
     pd.DataFrame(ds_stats).to_csv(output_path.joinpath(f"ds_stats_{phase_tag}.csv"))
 
@@ -380,10 +385,10 @@ def data_prep(phase_tag: str,
 
 
 def data_prep_all(phase_tag: str,
-              output_path: Path,
-              config: Optional[dict],
-              input_path,
-              ):
+                  output_path: Path,
+                  config: Optional[dict],
+                  input_path,
+                  ):
     """
     prepare the zooniverse classifications
 
@@ -407,7 +412,8 @@ def data_prep_all(phase_tag: str,
     # this user is a spammer
     df_zooniverse_data = df_zooniverse_data[df_zooniverse_data.user_id != 2581179]
     df_zooniverse_data.to_csv(flatdataset_path, index=False)
-    logger.info(f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
+    logger.info(
+        f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
     ds_stats.append({"filename": f"{flatdataset_path.name}",
                      "images": len(df_zooniverse_data.groupby('image_name').count())}
                     )
@@ -417,7 +423,7 @@ def data_prep_all(phase_tag: str,
     output_path.mkdir(exist_ok=True)
     subject_ids_filter = None
 
-    ## flatten, filter and metadata to it
+    # flatten, filter and metadata to it
     df_merged_dataset = process_zooniverse_phases_flat(df_zooniverse_flat=df_zooniverse_data,
                                                        image_source=None,
                                                        image_names=image_names,
@@ -434,11 +440,13 @@ def data_prep_all(phase_tag: str,
     logger.info(f"working with {len(df_merged_dataset)} records after process function 'process_zooniverse_phases'")
     df_merged_dataset.to_csv(config["merged_dataset"])
     logger.info(f"saved finished dataset to {config['merged_dataset']}")
-    ds_stats.append({"filename": f"{config['merged_dataset'].name}", "images": len(df_merged_dataset.image_name.unique())})
+    ds_stats.append(
+        {"filename": f"{config['merged_dataset'].name}", "images": len(df_merged_dataset.image_name.unique())})
 
     pd.DataFrame(ds_stats).to_csv(output_path.joinpath(f"ds_stats_{phase_tag}.csv"))
 
     return pd.DataFrame(ds_stats)
+
 
 def download_image(url, filename):
     """download an url to a file"""
@@ -465,20 +473,23 @@ def harmonize_field_names(df_subjects: pd.DataFrame) -> pd.DataFrame:
     :return:
     """
     df_subjects["image_name"] = df_subjects['metadata'].apply(lambda x: json.loads(x).get('Image_name')
-                                            or json.loads(x).get('image_name')
-                                            or json.loads(x).get('Filename')).sort_values(ascending=True)
+                                                                        or json.loads(x).get('image_name')
+                                                                        or json.loads(x).get('Filename')).sort_values(
+        ascending=True)
 
     # 'site', 'flight', 'Flight', 'Site', 'flight_code' depict the same
     df_subjects["flight_code"] = df_subjects['metadata'].apply(lambda x: json.loads(x).get('flight_code')
-                                            or json.loads(x).get('site')
-                                            or json.loads(x).get('flight')
-                                            or json.loads(x).get('Flight')
-                                            or json.loads(x).get('Site')).sort_values(ascending=True)
+                                                                         or json.loads(x).get('site')
+                                                                         or json.loads(x).get('flight')
+                                                                         or json.loads(x).get('Flight')
+                                                                         or json.loads(x).get('Site')).sort_values(
+        ascending=True)
 
     df_subjects["url"] = df_subjects['locations'].apply(lambda x: json.loads(x)["0"])
     df_subjects["filepath"] = None
 
     return df_subjects
+
 
 def anonymise_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
     from hashlib import blake2b
@@ -487,6 +498,7 @@ def anonymise_column(df: pd.DataFrame, column_name: str) -> pd.DataFrame:
         lambda x: blake2b(str(x).encode(), digest_size=16).hexdigest() if not pd.isnull(x) else x)
 
     return df
+
 
 def data_prep_panoptes(df_panoptes_point_extractor: pd.DataFrame,
                        df_panoptes_question: pd.DataFrame,
@@ -532,15 +544,18 @@ def data_prep_panoptes(df_panoptes_point_extractor: pd.DataFrame,
     columns_keep_y = ['data.frame0.T2_tool0_y', 'data.frame0.T2_tool1_y', 'data.frame0.T2_tool2_y']
 
     for col in columns_keep_x + columns_keep_y:
-        df_panoptes_point_extractor_r[col] = df_panoptes_point_extractor_r[col].apply(lambda x: literal_eval(x) if pd.notnull(x) else [])
+        df_panoptes_point_extractor_r[col] = df_panoptes_point_extractor_r[col].apply(
+            lambda x: literal_eval(x) if pd.notnull(x) else [])
 
     # Merge the lists in 'x' and 'y' coordinates
     df_panoptes_point_extractor_r['x'] = df_panoptes_point_extractor_r[columns_keep_x].values.tolist()
     df_panoptes_point_extractor_r['y'] = df_panoptes_point_extractor_r[columns_keep_y].values.tolist()
 
     # Flatten the lists in each row for 'x' and 'y'
-    df_panoptes_point_extractor_r['x'] = df_panoptes_point_extractor_r['x'].apply(lambda x: [item for sublist in x for item in sublist])
-    df_panoptes_point_extractor_r['y'] = df_panoptes_point_extractor_r['y'].apply(lambda x: [item for sublist in x for item in sublist])
+    df_panoptes_point_extractor_r['x'] = df_panoptes_point_extractor_r['x'].apply(
+        lambda x: [item for sublist in x for item in sublist])
+    df_panoptes_point_extractor_r['y'] = df_panoptes_point_extractor_r['y'].apply(
+        lambda x: [item for sublist in x for item in sublist])
 
     # Drop the columns that are not needed anymore
     df_panoptes_point_extractor_r = df_panoptes_point_extractor_r[
