@@ -315,6 +315,7 @@ def data_prep(phase_tag: str,
     df_zooniverse_data.to_csv(flatdataset_path, index=False)
     logger.info(
         f"flat_dataset_Iguanas {phase_tag}.csv: {len(df_zooniverse_data.groupby('image_name').count())} images in classification for {phase_tag}")
+
     ds_stats.append({"filename": f"{flatdataset_path.name}",
                      "images": len(df_zooniverse_data.groupby('image_name').count())}
                     )
@@ -352,6 +353,8 @@ def data_prep(phase_tag: str,
         subject_ids_filter = df_gold_standard_image_subset.subject_id.to_list()
     elif filter_combination == "expert":
         subject_ids_filter = df_goldstandard_expert_count.subject_id.to_list()
+    elif filter_combination == None:
+        subject_ids_filter = None
 
     ## flatten, filter and metadata to it
     df_merged_dataset = process_zooniverse_phases_flat(df_zooniverse_flat=df_zooniverse_data,
