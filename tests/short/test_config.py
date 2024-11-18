@@ -16,6 +16,7 @@ class DataPrepTestCase(unittest.TestCase):
                           'goldstandard_data',
                           'gold_standard_image_subset',
                           'image_source',
+                          'subjects_path',
                           'yes_no_dataset',
                           'flat_dataset',
                           'flat_panoptes_points',
@@ -42,7 +43,7 @@ class DataPrepTestCase(unittest.TestCase):
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/flat_dataset_Iguanas 1st launch.csv'),
             'flat_panoptes_points': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/flat_panoptes_points_Iguanas 1st launch.csv'),
-
+            'subjects_path' :Path('/Users/A/B/C/IguanasFromAbove/2024-08-08/iguanas-from-above-subjects.csv'),
             'gold_standard_and_expert_count': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_gold_standard_and_expert_count.csv'),
             'gold_standard_image_subset': Path(
