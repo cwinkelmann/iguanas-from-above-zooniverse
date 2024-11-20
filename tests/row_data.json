@@ -1,0 +1,195 @@
+[
+  {
+    "task": "T0",
+    "task_label": "Do you see any **MARINE IGUANAS** in the photo? Follow a zigzag pattern when searching. You can zoom in and invert color if needed. Look carefully! Please select **Yes** only when you are sure.  Check the Field Guide to see how small/big iguanas can be and the Help Text below for example images.",
+    "value": "Yes"
+  },
+  {
+    "task": "T2",
+    "task_label": "Identify **MARINE IGUANAS** in this photo. Mark them all! If you are not sure it is a **male** click **others**. Check the Help Text and Field Guide for helpful examples.",
+    "value": [
+      {
+        "x": 937.0723266601562,
+        "y": 58.004669189453125,
+        "tool": 1,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Adult Male not in a lek"
+      },
+      {
+        "x": 1094.908203125,
+        "y": 1027.11669921875,
+        "tool": 1,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Adult Male not in a lek"
+      },
+      {
+        "x": 782.3932495117188,
+        "y": 62.73974609375,
+        "tool": 2,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Others (females, young males, juveniles)"
+      },
+      {
+        "x": 861.3111572265625,
+        "y": 275.818115234375,
+        "tool": 2,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Others (females, young males, juveniles)"
+      },
+      {
+        "x": 982.8447265625,
+        "y": 353.1576843261719,
+        "tool": 2,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Others (females, young males, juveniles)"
+      },
+      {
+        "x": 1273.2626953125,
+        "y": 978.1875610351562,
+        "tool": 2,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Others (females, young males, juveniles)"
+      }
+    ]
+  },
+  {
+    "task": "T4",
+    "task_label": "**Final Task.** Do you see **other species** or **plastic objects** in this photo? Please mark them all. Remember, for algae and plants just mark once if present. If you find something interesting not listed, please click Talk \u0026 Done. Check the Field Guide and Help Text for help.",
+    "value": [
+      {
+        "x": 1124.94873046875,
+        "y": 409.8306579589844,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1352.866943359375,
+        "y": 268.014892578125,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1241.440185546875,
+        "y": 264.6383361816406,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 976.3798217773438,
+        "y": 18.14904022216797,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 785.6038818359375,
+        "y": 318.66339111328125,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 863.264892578125,
+        "y": 453.72601318359375,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1103.0009765625,
+        "y": 426.7135009765625,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 814.3046875,
+        "y": 1164.4930419921875,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 870.0180053710938,
+        "y": 1230.336181640625,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1032.0931396484375,
+        "y": 1167.86962890625,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1162.0909423828125,
+        "y": 1181.3759765625,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1276.8941650390625,
+        "y": 1255.660400390625,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1204.2979736328125,
+        "y": 1287.73779296875,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 1109.754150390625,
+        "y": 1289.426025390625,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 57.953941345214844,
+        "y": 1228.6478271484375,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      },
+      {
+        "x": 64.70706939697266,
+        "y": 700.21533203125,
+        "tool": 0,
+        "frame": 0,
+        "details": [],
+        "tool_label": "Crabs"
+      }
+    ]
+  }
+]

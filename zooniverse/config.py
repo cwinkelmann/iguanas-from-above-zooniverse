@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 def get_config(phase_tag, input_path, output_path=None):
     """
     Get the configuration for the data preparation of the zooniverse data and the filter datasets to calculate i.e. error metrics.
@@ -13,10 +14,12 @@ def get_config(phase_tag, input_path, output_path=None):
     if output_path is None:
         output_path = input / Path("current_analysis").joinpath(phase_tag)
 
+
+
     ## first phase
     configs["Iguanas 1st launch"] = {
         # classifications downloaded from zooniverse
-        "annotations_source": input_path.joinpath("IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv"),
+        "annotations_source": input_path.joinpath("IguanasFromAbove/2024-08-08/iguanas-from-above-classifications.csv"),
 
         # gold standard datatable with the expert count, used for filtering the dataset
         "goldstandard_data": input_path / Path(
@@ -34,7 +37,7 @@ def get_config(phase_tag, input_path, output_path=None):
     ## second phase
     configs["Iguanas 2nd launch"] = {
         # classifications
-        "annotations_source": input_path.joinpath("IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv"),
+        "annotations_source": input_path.joinpath("IguanasFromAbove/2024-08-08/iguanas-from-above-classifications.csv"),
 
         # gold standard datatable with the expert count
         "goldstandard_data": input_path / Path(
@@ -53,7 +56,7 @@ def get_config(phase_tag, input_path, output_path=None):
     # third phase
     configs["Iguanas 3rd launch"] = {
         # classifications
-        "annotations_source": input_path.joinpath("IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv"),
+        "annotations_source": input_path.joinpath("IguanasFromAbove/2024-08-08/iguanas-from-above-classifications.csv"),
 
         # gold standard datatable
         "goldstandard_data": input_path / Path(
@@ -67,6 +70,25 @@ def get_config(phase_tag, input_path, output_path=None):
         "image_source": None,
 
     }
+
+    configs["Iguanas 4th launch"] = {
+        # classifications
+        "annotations_source": input_path.joinpath("IguanasFromAbove/2024-08-08/iguanas-from-above-classifications.csv"),
+
+        # gold standard datatable
+        "goldstandard_data": input_path / Path(
+            "Images/Zooniverse_Goldstandard_images/expert-GS-4thphase_renamed.csv"), # TODO get these files
+
+        # which images/subject ids to consider. filters the data.
+        "gold_standard_image_subset": input_path.joinpath(
+            "Images/Zooniverse_Goldstandard_images/4-T2-GS-results-5th-0s.csv"), # TODO get these files
+
+        # images for plot on them
+        "image_source": None,
+
+    }
+
+    configs[phase_tag]["subjects_path"] = input_path.joinpath("IguanasFromAbove/2024-08-08/iguanas-from-above-subjects.csv")
 
     # the dataset which reduced tool 1 to iguana yes or iguana no
     configs[phase_tag]["yes_no_dataset"] = output_path.joinpath(
@@ -170,6 +192,8 @@ def get_config_all(phase_tag, input_path, output_path=None):
         # images for plot on them
         "image_source": None,
     }
+
+
 
     # the dataset which reduced tool 1 to iguana yes or iguana no
     configs[phase_tag]["yes_no_dataset"] = output_path.joinpath(

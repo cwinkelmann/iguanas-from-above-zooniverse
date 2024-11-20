@@ -1,0 +1,25 @@
+extractor_config:
+    point_extractor_by_frame:
+    -   details: {}
+        task: T2
+        tools:
+        - 0
+        - 1
+        - 2
+        - 3
+    -   details: {}
+        task: T4
+        tools:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+    question_extractor:
+    -   task: T0
+workflow_id: 25351
+workflow_version: '51.133'
