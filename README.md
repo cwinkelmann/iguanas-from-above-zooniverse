@@ -20,6 +20,13 @@ pip install -r requirements-dev.txt
 pip install -U git+https://github.com/zooniverse/aggregation-for-caesar.git
 
 ```
+
+
+## Testing if the installation was successful
+```bash
+pytest tests/short
+```
+
 ## Usage
 The process is split in two steps. The first is extracting a flat datastructure using the panoptes aggregation package from zooniverse.  This data prep is bundled in this Notebook [Panoptes Data Prep](./Panoptes_Data_Prep.ipynb).  These require the classification report "iguanas-from-above-classifications.csv" and the subjects export "iguanas-from-above-subjects.csv". An alternative was developed using a custom iterator [010_zooniverse_data_prep](./scripts/010_zooniverse_data_prep.py).
 

@@ -31,7 +31,7 @@ class DataPrepTestCase(unittest.TestCase):
                           'dbscan_hyperparam_grid'], list(config.keys()))
 
         self.assertEqual({'annotations_source': Path(
-            '/Users/A/B/C/IguanasFromAbove/2023-10-15/iguanas-from-above-classifications.csv'),
+            '/Users/A/B/C/IguanasFromAbove/2024-08-08/iguanas-from-above-classifications.csv'),
             'comparison_dataset': Path(
                 '/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_comparison.csv'),
             'comparison_dataset_expert': Path('/Users/A/B/C/test_analysis/Iguanas 1st launch/Iguanas 1st launch_method_comparison_expert.csv'),
