@@ -187,6 +187,9 @@ def test_basic_statistics(df_merged_dataset):
 
 
 def test_basic_statistics_expert(df_merged_dataset, expert_subjectids):
+    """
+    Testing the annotation stats function
+    """
     basic_stats = []
 
     df_merged_dataset = df_merged_dataset[df_merged_dataset["subject_id"].isin(expert_subjectids)]
